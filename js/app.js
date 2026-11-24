@@ -403,48 +403,24 @@ ENREGISTREMENT
 =========================================
 */
 
-function saveCurrentDomain() {
+async function loadStoredDomains() {
 
-    const data =
-        getFormData();
+    try {
 
-    const existingIndex =
-        domaines.findIndex(
-            d => d.id === data.id
-        );
-
-    if (
-        existingIndex > -1
-    ) {
-
-        domaines[
-            existingIndex
-        ] = data;
-
-    } else {
-
-        domaines.push(data);
+        domaines =
+            await loadDomains();
 
     }
 
-    localStorage.setItem(
+    catch(error) {
 
-        "weddingDomains",
+        console.error(error);
 
-        JSON.stringify(domaines)
+        domaines = [];
 
-    );
-
-    refreshDashboard();
-
-    alert(
-        "✅ Domaine enregistré"
-    );
-
-    showPage("dashboard");
+    }
 
 }
-
 /*
 =========================================
 CHARGEMENT
