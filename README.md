@@ -6,6 +6,8 @@ sur des domaines de mariage (4 jours), puis produire un classeur Excel analysabl
 Aucun serveur, aucun compte, aucune base de données distante : **les données
 restent dans le navigateur de l'appareil utilisé**.
 
+Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
+
 ## Fonctionnement
 
 - Une seule page (`index.html`) avec trois écrans : accueil, visite, comparatif.
