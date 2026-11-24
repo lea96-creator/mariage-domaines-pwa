@@ -172,6 +172,12 @@ CHARGER DOMAINES
 
 async function loadDomains() {
 
+    if (!db) {
+
+        await initDatabase();
+
+    }
+
     return new Promise((resolve, reject) => {
 
         const transaction =
@@ -190,9 +196,7 @@ async function loadDomains() {
 
         request.onsuccess = () => {
 
-            resolve(
-                request.result || []
-            );
+            resolve(request.result || []);
 
         };
 
@@ -205,7 +209,6 @@ async function loadDomains() {
     });
 
 }
-
 /*
 =========================================
 SUPPRIMER DOMAINE
