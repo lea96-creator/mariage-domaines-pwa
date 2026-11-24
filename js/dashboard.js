@@ -382,9 +382,7 @@ INDICATEURS
 
 function generateInsights() {
 
-    if (
-        dashboardData.length === 0
-    ) {
+    if (dashboardData.length === 0) {
 
         return [];
 
@@ -393,18 +391,15 @@ function generateInsights() {
     const insights = [];
 
     const best =
-        dashboardData
-        .reduce(
-            (best,current) =>
+        dashboardData.reduce(
+            (best, current) =>
                 current.score > best.score
                     ? current
                     : best
         );
 
     insights.push(
-
         `🏆 Meilleur domaine : ${best.domainName} (${best.score}/100)`
-
     );
 
     const value =
@@ -413,9 +408,7 @@ function generateInsights() {
     if (value) {
 
         insights.push(
-
             `💰 Meilleur rapport qualité/prix : ${value.domainName}`
-
         );
 
     }
@@ -423,7 +416,6 @@ function generateInsights() {
     return insights;
 
 }
-
 /*
 =========================================
 EXPORT RAPIDE TABLEAU
