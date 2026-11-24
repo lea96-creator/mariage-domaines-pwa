@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Wedding Domaines Planner</title>
+
+    <meta name="theme-color" content="#8b5e3c">
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="icon" href="icons/icon-192.png">
+
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container">
+
+        <h1>💍 Wedding Domaines Planner</h1>
+
+        <p>
+            Comparateur de domaines pour mariage sur 4 jours
+        </p>
+
+    </div>
+</header>
+
+<main>
+
+    <!-- DASHBOARD -->
+
+    <section id="dashboard" class="page active">
+
+        <div class="container">
+
+            <div class="top-actions">
+
+                <button id="btnNewDomain" class="btn-primary">
+                    ➕ Nouveau domaine
+                </button>
+
+                <button id="btnExportExcel" class="btn-secondary">
+                    📊 Export Excel
+                </button>
+
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="card stat">
+                    <h3>🏡 Domaines</h3>
+                    <span id="totalDomains">0</span>
+                </div>
+
+                <div class="card stat">
+                    <h3>⭐ Meilleure note</h3>
+                    <span id="bestScore">0</span>
+                </div>
+
+                <div class="card stat">
+                    <h3>❤️ Coup de cœur</h3>
+                    <span id="favoriteDomain">-</span>
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <h2>Classement automatique</h2>
+
+                <div id="rankingList">
+
+                    <div class="empty-state">
+                        Aucun domaine enregistré
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FORMULAIRE DOMAINE -->
+
+    <section id="domainForm" class="page">
+
+        <div class="container">
+
+            <div class="card">
+
+                <h2>Informations générales</h2>
+
+                <label>Nom du domaine</label>
+
+                <input
+                    type="text"
+                    id="domainName"
+                    placeholder="Ex : Domaine des Cordeliers">
+
+                <label>Date de visite</label>
+
+                <input
+                    type="date"
+                    id="visitDate">
+
+                <label>Personne de contact</label>
+
+                <input
+                    type="text"
+                    id="contactName">
+
+                <label>Téléphone</label>
+
+                <input
+                    type="tel"
+                    id="contactPhone">
+
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    id="contactEmail">
+
+                <label>Prix annoncé (€)</label>
+
+                <input
+                    type="number"
+                    id="estimatedPrice">
+
+            </div>
+
+            <!-- QUESTIONS -->
+
+            <div id="questionnaireContainer">
+
+                <!-- Généré automatiquement via questions.js -->
+
+            </div>
+
+            <!-- PHOTOS -->
+
+            <div class="card">
+
+                <h2>📷 Photos du domaine</h2>
+
+                <input
+                    type="file"
+                    id="photos"
+                    accept="image/*"
+                    multiple>
+
+                <div id="photosPreview"></div>
+
+            </div>
+
+            <!-- NOTES -->
+
+            <div class="card">
+
+                <h2>📝 Notes générales</h2>
+
+                <textarea
+                    id="generalNotes"
+                    placeholder="Commentaires libres..."></textarea>
+
+            </div>
+
+            <!-- SCORE -->
+
+            <div class="card score-card">
+
+                <h2>⭐ Score global</h2>
+
+                <div id="totalScore">
+
+                    0 / 100
+
+                </div>
+
+            </div>
+
+            <!-- ACTIONS -->
+
+            <div class="actions">
+
+                <button
+                    id="btnSave"
+                    class="btn-success">
+
+                    💾 Enregistrer
+
+                </button>
+
+                <button
+                    id="btnBack"
+                    class="btn-secondary">
+
+                    ⬅ Retour
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- COMPARATEUR -->
+
+    <section id="comparisonPage" class="page">
+
+        <div class="container">
+
+            <div class="card">
+
+                <h2>📈 Comparatif des domaines</h2>
+
+                <div id="comparisonTable">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<nav class="bottom-nav">
+
+    <button data-page="dashboard">
+
+        🏠
+        <span>Accueil</span>
+
+    </button>
+
+    <button data-page="domainForm">
+
+        🏡
+        <span>Visite</span>
+
+    </button>
+
+    <button data-page="comparisonPage">
+
+        📊
+        <span>Comparatif</span>
+
+    </button>
+
+</nav>
+
+<script src="js/questions.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/excelExport.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+
+if ('serviceWorker' in navigator) {
+
+    window.addEventListener('load', () => {
+
+        navigator.serviceWorker.register('./sw.js');
+
+    });
+
+}
+
+</script>
+
+</body>
+
+</html>
