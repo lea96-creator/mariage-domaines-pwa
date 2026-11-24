@@ -1,7 +1,7 @@
 /*
 =========================================
 Wedding Domaines Planner
-Questions V1
+questions.js — catalogue, réponses, score
 =========================================
 */
 
@@ -9,7 +9,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "disponibilites",
-    title: "📅 Disponibilités et privatisation",
+    title: "Disponibilités et privatisation",
     weight: 10,
     questions: [
         "La date souhaitée est-elle disponible ?",
@@ -27,7 +27,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "hebergement",
-    title: "🛏 Hébergements",
+    title: "Hébergements",
     weight: 15,
     questions: [
         "Nombre de couchages suffisant ?",
@@ -45,7 +45,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "restauration",
-    title: "🍽 Restauration",
+    title: "Restauration",
     weight: 10,
     questions: [
         "Traiteur libre ?",
@@ -63,7 +63,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "ambiance",
-    title: "🎉 Ambiance guinguette",
+    title: "Ambiance guinguette",
     weight: 10,
     questions: [
         "Le lieu correspond-il à l'ambiance recherchée ?",
@@ -81,7 +81,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "musique",
-    title: "🎵 Musique et soirée",
+    title: "Musique et soirée",
     weight: 10,
     questions: [
         "DJ libre ?",
@@ -99,7 +99,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "exterieurs",
-    title: "🌳 Espaces extérieurs",
+    title: "Espaces extérieurs",
     weight: 10,
     questions: [
         "Cérémonie extérieure possible ?",
@@ -117,7 +117,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "planB",
-    title: "☔ Plan B pluie",
+    title: "Plan B pluie",
     weight: 10,
     questions: [
         "Tous les invités peuvent être couverts ?",
@@ -135,7 +135,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "logistique",
-    title: "🚗 Logistique",
+    title: "Logistique",
     weight: 5,
     questions: [
         "Parking suffisant ?",
@@ -153,7 +153,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "prestataires",
-    title: "🤝 Prestataires",
+    title: "Prestataires",
     weight: 5,
     questions: [
         "Photographe libre ?",
@@ -171,7 +171,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "tarifs",
-    title: "💰 Budget",
+    title: "Budget",
     weight: 10,
     questions: [
         "Tarif cohérent ?",
@@ -189,7 +189,7 @@ const QUESTION_CATEGORIES = [
 
 {
     id: "coupdecoeur",
-    title: "❤️ Coup de cœur",
+    title: "Coup de cœur",
     weight: 5,
     questions: [
         "Je me projette dans ce lieu",
@@ -209,31 +209,121 @@ const QUESTION_CATEGORIES = [
 
 /*
 =========================================
-Calcul théorique
+RÉPONSES
 =========================================
 */
 
 const ANSWER_VALUES = {
     yes: 10,
     partial: 5,
-    no: 0,
-    unknown: 0
+    no: 0
 };
+
+const ANSWER_LABELS = {
+    yes: "Oui",
+    partial: "Partiel",
+    no: "Non",
+    unknown: "Inconnu",
+    "": ""
+};
+
+const VALID_ANSWERS = new Set([
+    "",
+    "yes",
+    "partial",
+    "no",
+    "unknown"
+]);
 
 /*
 =========================================
-Nombre de questions
+INDEX DES QUESTIONS
 =========================================
 */
 
-const TOTAL_QUESTIONS =
-QUESTION_CATEGORIES.reduce(
-    (sum, category) =>
-        sum + category.questions.length,
-    0
-);
+const QUESTION_INDEX = new Map();
 
-console.log(
-    "Questions chargées : ",
-    TOTAL_QUESTIONS
-);
+QUESTION_CATEGORIES.forEach(category => {
+
+    category.questions.forEach((question, index) => {
+
+        const id = `${category.id}_${index}`;
+
+        QUESTION_INDEX.set(id, {
+            id,
+            question,
+            category,
+            index
+        });
+
+    });
+
+});
+
+const TOTAL_QUESTIONS = QUESTION_INDEX.size;
+
+const TOTAL_WEIGHT =
+    QUESTION_CATEGORIES.reduce(
+        (sum, category) => sum + category.weight,
+        0
+    );
+
+/*
+=========================================
+SCORE
+=========================================
+Chaque catégorie est notée sur 10 puis
+pondérée. "Inconnu" et les questions sans
+réponse sont neutres : ils ne sont pas
+comptés dans le score.
+=========================================
+*/
+
+function calculateDomainScore(answers = {}) {
+
+    let earned = 0;
+    let weightAnswered = 0;
+
+    QUESTION_CATEGORIES.forEach(category => {
+
+        let categoryPoints = 0;
+        let categoryAnswered = 0;
+
+        category.questions.forEach((question, index) => {
+
+            const value =
+                answers[`${category.id}_${index}`];
+
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    ANSWER_VALUES,
+                    value
+                )
+            ) {
+
+                categoryPoints += ANSWER_VALUES[value];
+                categoryAnswered++;
+
+            }
+
+        });
+
+        if (categoryAnswered > 0) {
+
+            earned +=
+                (categoryPoints / categoryAnswered / 10)
+                * category.weight;
+
+            weightAnswered += category.weight;
+
+        }
+
+    });
+
+    if (weightAnswered === 0) return 0;
+
+    return Math.round(
+        (earned / weightAnswered) * 100
+    );
+
+}

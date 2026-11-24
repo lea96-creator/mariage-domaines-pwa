@@ -3,27 +3,56 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Wedding Domaines Planner</title>
+    <meta name="description" content="Noter les réponses aux questions lors des visites de domaines de mariage, puis exporter vers Excel.">
 
     <meta name="theme-color" content="#8b5e3c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Domaines">
 
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
 
     <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
 
 </head>
 
 <body>
 
+<!-- Icônes SVG locales : aucun emoji, aucune police particulière -->
+<svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-home" viewBox="0 0 24 24">
+        <path d="M3 10.5 12 3l9 7.5"/>
+        <path d="M5 9.5V21h14V9.5"/>
+        <path d="M9 21v-6h6v6"/>
+    </symbol>
+    <symbol id="i-visit" viewBox="0 0 24 24">
+        <rect x="5" y="4" width="14" height="17" rx="2"/>
+        <path d="M9 4V2h6v2"/>
+        <path d="M9 10h6M9 14h6M9 18h4"/>
+    </symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24">
+        <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>
+    </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24">
+        <path d="M3 17.25V21h3.75L18 9.75l-3.75-3.75L3 17.25z"/>
+        <path d="M14.5 6.5l3 3"/>
+    </symbol>
+    <symbol id="i-delete" viewBox="0 0 24 24">
+        <path d="M4 7h16"/>
+        <path d="M9 7V4h6v3"/>
+        <path d="M6 7l1 14h10l1-14"/>
+        <path d="M10 11v6M14 11v6"/>
+    </symbol>
+</svg>
+
 <header class="header">
     <div class="container">
 
-        <h1>💍 Wedding Domaines Planner</h1>
+        <h1>Wedding Domaines Planner</h1>
 
         <p>
             Comparateur de domaines pour mariage sur 4 jours
@@ -42,30 +71,73 @@
 
             <div class="top-actions">
 
-                <button id="btnNewDomain" class="btn-primary">
-                    ➕ Nouveau domaine
+                <button
+                    id="btnNewDomain"
+                    type="button"
+                    class="btn-primary">
+
+                    Nouveau domaine
+
                 </button>
 
-                <button id="btnExportExcel" class="btn-secondary">
-                    📊 Export Excel
+                <button
+                    id="btnExportExcel"
+                    type="button"
+                    class="btn-secondary">
+
+                    Export Excel
+
                 </button>
 
             </div>
 
+            <div class="top-actions secondary">
+
+                <button
+                    id="btnBackup"
+                    type="button"
+                    class="btn-secondary">
+
+                    Sauvegarde JSON
+
+                </button>
+
+                <button
+                    id="btnRestore"
+                    type="button"
+                    class="btn-secondary">
+
+                    Restaurer
+
+                </button>
+
+                <input
+                    type="file"
+                    id="importFile"
+                    accept="application/json,.json"
+                    hidden>
+
+            </div>
+
+            <p class="hint">
+                Vos données restent sur cet appareil. Faites une sauvegarde
+                pour les transférer (téléphone vers PC).
+            </p>
+
             <div class="stats-grid">
 
                 <div class="card stat">
-                    <h3>🏡 Domaines</h3>
+                    <h3>Domaines</h3>
                     <span id="totalDomains">0</span>
                 </div>
 
                 <div class="card stat">
-                    <h3>⭐ Meilleure note</h3>
+                    <h3>Meilleure note</h3>
                     <span id="bestScore">0</span>
                 </div>
 
                 <div class="card stat">
-                    <h3>❤️ Coup de cœur</h3>
+                    <h3>Coup de cœur</h3>
                     <span id="favoriteDomain">-</span>
                 </div>
 
@@ -95,120 +167,105 @@
 
         <div class="container">
 
-            <div class="card">
+            <form id="domainEditor">
 
-                <h2>Informations générales</h2>
+                <div class="card">
 
-                <label>Nom du domaine</label>
+                    <h2>Informations générales</h2>
 
-                <input
-                    type="text"
-                    id="domainName"
-                    placeholder="Ex : Domaine des Cordeliers">
+                    <label for="domainName">Nom du domaine</label>
+                    <input
+                        type="text"
+                        id="domainName"
+                        required
+                        placeholder="Ex : Domaine des Cordeliers">
 
-                <label>Date de visite</label>
+                    <label for="visitDate">Date de visite</label>
+                    <input
+                        type="date"
+                        id="visitDate">
 
-                <input
-                    type="date"
-                    id="visitDate">
+                    <label for="contactName">Personne de contact</label>
+                    <input
+                        type="text"
+                        id="contactName">
 
-                <label>Personne de contact</label>
+                    <label for="contactPhone">Téléphone</label>
+                    <input
+                        type="tel"
+                        id="contactPhone">
 
-                <input
-                    type="text"
-                    id="contactName">
+                    <label for="contactEmail">Email</label>
+                    <input
+                        type="email"
+                        id="contactEmail">
 
-                <label>Téléphone</label>
-
-                <input
-                    type="tel"
-                    id="contactPhone">
-
-                <label>Email</label>
-
-                <input
-                    type="email"
-                    id="contactEmail">
-
-                <label>Prix annoncé (€)</label>
-
-                <input
-                    type="number"
-                    id="estimatedPrice">
-
-            </div>
-
-            <!-- QUESTIONS -->
-
-            <div id="questionnaireContainer">
-
-                <!-- Généré automatiquement via questions.js -->
-
-            </div>
-
-            <!-- PHOTOS -->
-
-            <div class="card">
-
-                <h2>📷 Photos du domaine</h2>
-
-                <input
-                    type="file"
-                    id="photos"
-                    accept="image/*"
-                    multiple>
-
-                <div id="photosPreview"></div>
-
-            </div>
-
-            <!-- NOTES -->
-
-            <div class="card">
-
-                <h2>📝 Notes générales</h2>
-
-                <textarea
-                    id="generalNotes"
-                    placeholder="Commentaires libres..."></textarea>
-
-            </div>
-
-            <!-- SCORE -->
-
-            <div class="card score-card">
-
-                <h2>⭐ Score global</h2>
-
-                <div id="totalScore">
-
-                    0 / 100
+                    <label for="estimatedPrice">Prix annoncé (€)</label>
+                    <input
+                        type="number"
+                        id="estimatedPrice"
+                        min="0"
+                        step="any"
+                        inputmode="decimal">
 
                 </div>
 
-            </div>
+                <!-- Généré automatiquement via questions.js + ui.js -->
+                <div id="questionnaireContainer"></div>
 
-            <!-- ACTIONS -->
+                <!-- NOTES -->
 
-            <div class="actions">
+                <div class="card">
 
-                <button
-                    id="btnSave"
-                    class="btn-success">
+                    <h2>Notes générales</h2>
 
-                    💾 Enregistrer
+                    <label for="generalNotes">Commentaires libres</label>
+                    <textarea
+                        id="generalNotes"
+                        placeholder="Commentaires libres..."></textarea>
 
-                </button>
+                </div>
 
-                <button
-                    id="btnBack"
-                    class="btn-secondary">
+                <!-- SCORE -->
 
-                    ⬅ Retour
+                <div class="card score-card">
 
-                </button>
+                    <h2>Score global</h2>
 
-            </div>
+                    <div id="totalScore">0 / 100</div>
+
+                    <p class="hint">
+                        Les réponses « Inconnu » et les questions sans
+                        réponse ne sont pas pénalisées.
+                    </p>
+
+                </div>
+
+                <!-- ACTIONS -->
+
+                <div class="actions">
+
+                    <button
+                        id="btnSave"
+                        type="submit"
+                        class="btn-success">
+
+                        Enregistrer
+
+                    </button>
+
+                    <button
+                        id="btnBack"
+                        type="button"
+                        class="btn-secondary">
+
+                        Retour
+
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
 
@@ -222,11 +279,9 @@
 
             <div class="card">
 
-                <h2>📈 Comparatif des domaines</h2>
+                <h2>Comparatif des domaines</h2>
 
-                <div id="comparisonTable">
-
-                </div>
+                <div id="comparisonTable"></div>
 
             </div>
 
@@ -236,44 +291,58 @@
 
 </main>
 
-<nav class="bottom-nav">
+<nav class="bottom-nav" aria-label="Navigation principale">
 
-    <button data-page="dashboard">
+    <button type="button" data-page="dashboard" aria-current="page">
 
-        🏠
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"></use></svg>
         <span>Accueil</span>
 
     </button>
 
-    <button data-page="domainForm">
+    <button type="button" data-page="domainForm">
 
-        🏡
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-visit"></use></svg>
         <span>Visite</span>
 
     </button>
 
-    <button data-page="comparisonPage">
+    <button type="button" data-page="comparisonPage">
 
-        📊
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg>
         <span>Comparatif</span>
 
     </button>
 
 </nav>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
+<div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite">
+</div>
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="js/questions.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/dashboard.js"></script>
+<script src="js/store.js"></script>
 <script src="js/excelExport.js"></script>
-<script src="js/app.js"></script>
+<script src="js/ui.js"></script>
+
 <script>
 
-if ('serviceWorker' in navigator) {
+if ("serviceWorker" in navigator) {
 
-    window.addEventListener('load', () => {
+    window.addEventListener("load", () => {
 
-        navigator.serviceWorker.register('./sw.js');
+        navigator.serviceWorker
+            .register("./sw.js")
+            .catch(error =>
+                console.error(
+                    "Service worker indisponible",
+                    error
+                )
+            );
 
     });
 

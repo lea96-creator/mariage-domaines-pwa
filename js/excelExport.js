@@ -5,20 +5,13 @@ excelExport.js
 =========================================
 */
 
-async function exportDomainsToExcel() {
+function exportDomainsToExcel(domains = getState().domains) {
+
+    if (!domains || domains.length === 0) {
+        throw new Error("Aucun domaine enregistré.");
+    }
 
     try {
-
-        const domains = await loadDomains();
-
-        if (!domains || domains.length === 0) {
-
-            alert(
-                "Aucun domaine enregistré."
-            );
-
-            return;
-        }
 
         const workbook =
             XLSX.utils.book_new();
@@ -323,121 +316,8 @@ async function exportDomainsToExcel() {
 
         console.error(error);
 
-        alert(
-            "Erreur lors de l'export Excel."
-        );
+        throw error;
 
     }
-
-}
-
-/*
-=========================================
-EXPORT JSON
-=========================================
-*/
-
-async function exportRawData() {
-
-    const domains =
-        await loadDomains();
-
-    const file = {
-
-        exportDate:
-            new Date().toISOString(),
-
-        version: "1.0",
-
-        domains
-
-    };
-
-    const blob =
-        new Blob(
-
-            [
-                JSON.stringify(
-                    file,
-                    null,
-                    2
-                )
-            ],
-
-            {
-                type:
-                "application/json"
-            }
-
-        );
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-    const link =
-        document.createElement("a");
-
-    link.href = url;
-
-    link.download =
-        "WeddingDomainesBackup.json";
-
-    link.click();
-
-}
-
-/*
-=========================================
-BOUTON EXPORT
-=========================================
-*/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        const button =
-            document.getElementById(
-                "btnExportExcel"
-            );
-
-        if (button) {
-
-            button.addEventListener(
-
-                "click",
-
-                exportDomainsToExcel
-
-            );
-
-        }
-
-    }
-
-);
-
-/*
-=========================================
-UTILITAIRES
-=========================================
-*/
-
-function excelValue(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return "";
-
-    }
-
-    return value;
 
 }
