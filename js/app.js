@@ -432,17 +432,20 @@ CHARGEMENT
 =========================================
 */
 
-function loadStoredDomains() {
+async function loadStoredDomains() {
 
-    const stored =
-        localStorage.getItem(
-            "weddingDomains"
-        );
-
-    if (stored) {
+    try {
 
         domaines =
-            JSON.parse(stored);
+            await loadDomains();
+
+    }
+
+    catch(error) {
+
+        console.error(error);
+
+        domaines = [];
 
     }
 
