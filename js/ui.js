@@ -756,163 +756,6 @@ ui.js — une seule source de vérité
 
     }
 
-    /*
-    =========================================
-    SAUVEGARDE / TRANSFERT
-    =========================================
-    */
-
-    function downloadBlob(blob, filename) {
-
-        const url =
-            URL.createObjectURL(blob);
-
-        const link =
-            document.createElement("a");
-
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
-        window.setTimeout(
-            () => URL.revokeObjectURL(url),
-            1000
-        );
-
-    }
-
-    function backupFilename() {
-
-        return (
-            "sauvegarde-domaines-"
-            + todayISO()
-            + ".json"
-        );
-
-    }
-
-    async function exportBackupFile() {
-
-        const blob = new Blob(
-            [
-                JSON.stringify(
-                    buildBackup(),
-                    null,
-                    2
-                )
-            ],
-            { type: "application/json" }
-        );
-
-        const filename = backupFilename();
-
-        if (
-            typeof File !== "undefined" &&
-            navigator.share &&
-            navigator.canShare
-        ) {
-
-            const file = new File(
-                [blob],
-                filename,
-                { type: "application/json" }
-            );
-
-            if (
-                navigator.canShare({ files: [file] })
-            ) {
-
-                try {
-
-                    await navigator.share({
-                        files: [file],
-                        title: "Sauvegarde des domaines",
-                        text: "Sauvegarde à transférer sur un autre appareil"
-                    });
-
-                    showToast(
-                        "Sauvegarde partagée"
-                    );
-
-                    return;
-
-                } catch (error) {
-
-                    if (
-                        error &&
-                        error.name === "AbortError"
-                    ) {
-                        return;
-                    }
-
-                    console.warn(
-                        "Partage impossible, téléchargement utilisé",
-                        error
-                    );
-
-                }
-
-            }
-
-        }
-
-        downloadBlob(blob, filename);
-
-        showToast(
-            "Sauvegarde téléchargée"
-        );
-
-    }
-
-    async function importBackupFile(event) {
-
-        const input = event.target;
-        const file =
-            input.files && input.files[0];
-
-        if (!file) return;
-
-        try {
-
-            const text = await file.text();
-            const payload = parseBackup(text);
-
-            if (
-                !window.confirm(
-                    "Fusionner cette sauvegarde ?\n\n" +
-                    "Les domaines ayant le même identifiant " +
-                    "seront remplacés, les autres ajoutés."
-                )
-            ) {
-                return;
-            }
-
-            const result = mergeBackup(payload);
-
-            render();
-
-            showToast(
-                `${result.added} ajouté(s), ${
-                    result.updated
-                } remplacé(s)`
-            );
-
-        } catch (error) {
-
-            showToast(
-                `Erreur : ${error.message}`,
-                "error"
-            );
-
-        } finally {
-
-            input.value = "";
-
-        }
-
-    }
 
     function exportExcel() {
 
@@ -944,6 +787,11 @@ ui.js — une seule source de vérité
     */
 
     function bindEvents() {
+
+        Transfer.init({
+            onMessage: showToast,
+            onImported: render
+        });
 
         document
             .querySelectorAll(
@@ -1024,7 +872,7 @@ ui.js — une seule source de vérité
 
         $("btnBackup").addEventListener(
             "click",
-            exportBackupFile
+            Transfer.exportBackupFile
         );
 
         $("btnRestore").addEventListener(
@@ -1034,7 +882,10 @@ ui.js — une seule source de vérité
 
         $("importFile").addEventListener(
             "change",
-            importBackupFile
+            event =>
+                Transfer.importBackupFile(
+                    event.target
+                )
         );
 
     }
