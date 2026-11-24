@@ -409,22 +409,21 @@ ENREGISTREMENT
 =========================================
 */
 
-async function loadStoredDomains() {
+async function saveCurrentDomain() {
 
-    try {
+    const data = getFormData();
 
-        domaines =
-            await loadDomains();
+    await saveDomain(data);
 
-    }
+    dashboardData = await loadDomains();
 
-    catch(error) {
+    refreshDashboard();
 
-        console.error(error);
+    alert(
+        "✅ Domaine enregistré"
+    );
 
-        domaines = [];
-
-    }
+    showPage("dashboard");
 
 }
 /*
