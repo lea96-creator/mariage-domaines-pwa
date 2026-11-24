@@ -1,11 +1,15 @@
 /*
-==========================================
- Wedding Domaines Planner
- Service Worker V1
-==========================================
+=========================================
+Wedding Domaines Planner
+Service Worker v2
+=========================================
+À incrémenter à chaque déploiement : la
+nouvelle version supprime l'ancien cache.
+=========================================
 */
 
-const CACHE_NAME = "wedding-domaines-v1.0.0";
+const CACHE_VERSION = "v2.0.0";
+const CACHE_NAME = `wedding-domaines-${CACHE_VERSION}`;
 
 const APP_ASSETS = [
 
@@ -13,14 +17,14 @@ const APP_ASSETS = [
     "./index.html",
 
     "./manifest.json",
-
     "./css/style.css",
 
-    "./js/app.js",
-    "./js/storage.js",
     "./js/questions.js",
-    "./js/dashboard.js",
+    "./js/store.js",
     "./js/excelExport.js",
+    "./js/transfer.js",
+    "./js/ui.js",
+    "./js/vendor/xlsx.full.min.js",
 
     "./icons/icon-72.png",
     "./icons/icon-96.png",
@@ -33,143 +37,216 @@ const APP_ASSETS = [
 
 ];
 
+function offlineResponse() {
+
+    return new Response(
+        "Application indisponible hors ligne.",
+        {
+            status: 503,
+            headers: {
+                "Content-Type":
+                    "text/plain; charset=utf-8"
+            }
+        }
+    );
+
+}
+
 /*
-==========================================
+=========================================
 INSTALL
-==========================================
+=========================================
 */
 
 self.addEventListener("install", event => {
 
-    console.log("Service Worker installé");
-
     event.waitUntil(
 
         caches.open(CACHE_NAME)
-
-            .then(cache => {
-
-                return cache.addAll(APP_ASSETS);
-
-            })
+            .then(cache => cache.addAll(APP_ASSETS))
+            .then(() => self.skipWaiting())
 
     );
-
-    self.skipWaiting();
 
 });
 
 /*
-==========================================
+=========================================
 ACTIVATE
-==========================================
+=========================================
 */
 
 self.addEventListener("activate", event => {
 
-    console.log("Service Worker activé");
-
     event.waitUntil(
 
-        caches.keys().then(keys => {
+        caches.keys()
+            .then(keys => {
 
-            return Promise.all(
+                return Promise.all(
 
-                keys
+                    keys
+                        .filter(key =>
+                            key.startsWith(
+                                "wedding-domaines-"
+                            ) &&
+                            key !== CACHE_NAME
+                        )
+                        .map(key => caches.delete(key))
 
-                    .filter(key => key !== CACHE_NAME)
+                );
 
-                    .map(key => caches.delete(key))
-
-            );
-
-        })
+            })
+            .then(() => self.clients.claim())
 
     );
-
-    self.clients.claim();
 
 });
 
 /*
-==========================================
+=========================================
 FETCH
-==========================================
+=========================================
+Navigation : réseau d'abord, cache en
+repli (pour voir les mises à jour).
+Autres fichiers : cache d'abord,
+revalidation silencieuse en arrière-plan.
+=========================================
 */
 
 self.addEventListener("fetch", event => {
 
-    if (event.request.method !== "GET") {
+    const request = event.request;
+
+    if (request.method !== "GET") {
+        return;
+    }
+
+    const url = new URL(request.url);
+
+    if (url.origin !== self.location.origin) {
+        return;
+    }
+
+    const cachePromise =
+        caches.open(CACHE_NAME);
+
+    if (request.mode === "navigate") {
+
+        const networkPromise =
+            fetch(request)
+                .then(response => {
+
+                    if (!response || !response.ok) {
+                        return response;
+                    }
+
+                    return cachePromise
+                        .then(cache =>
+                            cache.put(
+                                request,
+                                response.clone()
+                            )
+                        )
+                        .then(() => response);
+
+                });
+
+        event.waitUntil(
+            networkPromise.catch(
+                () => undefined
+            )
+        );
+
+        event.respondWith(
+
+            networkPromise.catch(() =>
+
+                cachePromise.then(cache =>
+
+                    cache.match(request)
+                        .then(hit => hit ||
+                            cache.match("./index.html")
+                        )
+                        .then(hit => hit || offlineResponse())
+
+                )
+
+            )
+
+        );
 
         return;
 
     }
 
-    event.respondWith(
+    const networkPromise =
+        fetch(request)
+            .then(response => {
 
-        caches.match(event.request)
+                if (response && response.ok) {
 
-            .then(cachedResponse => {
-
-                if (cachedResponse) {
-
-                    return cachedResponse;
+                    return cachePromise
+                        .then(cache =>
+                            cache.put(
+                                request,
+                                response.clone()
+                            )
+                        )
+                        .then(() => response);
 
                 }
 
-                return fetch(event.request)
-
-                    .then(networkResponse => {
-
-                        const responseClone =
-                            networkResponse.clone();
-
-                        caches.open(CACHE_NAME)
-
-                            .then(cache => {
-
-                                cache.put(
-                                    event.request,
-                                    responseClone
-                                );
-
-                            });
-
-                        return networkResponse;
-
-                    })
-
-                    .catch(() => {
-
-                        if (
-                            event.request.headers.get("accept")
-                            ?.includes("text/html")
-                        ) {
-
-                            return caches.match("./index.html");
-
-                        }
-
-                    });
+                return response;
 
             })
+            .catch(async () => {
+
+                const cached =
+                    await caches.match(request);
+
+                return cached || offlineResponse();
+
+            });
+
+    event.waitUntil(
+        networkPromise.catch(
+            () => undefined
+        )
+    );
+
+    event.respondWith(
+
+        (async () => {
+
+            const cache =
+                await cachePromise;
+
+            const cached =
+                await cache.match(request);
+
+            if (cached) {
+                return cached;
+            }
+
+            return networkPromise;
+
+        })()
 
     );
 
 });
 
 /*
-==========================================
+=========================================
 MESSAGE
-==========================================
+=========================================
 */
 
 self.addEventListener("message", event => {
 
     if (event.data === "SKIP_WAITING") {
-
         self.skipWaiting();
-
     }
 
 });
