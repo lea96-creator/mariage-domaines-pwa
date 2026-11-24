@@ -1,5 +1,3 @@
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-/*
 =========================================
 Wedding Domaines Planner
 excelExport.js
