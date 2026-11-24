@@ -14,20 +14,26 @@ INITIALISATION
 =========================================
 */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
 
-    loadStoredDomains();
+    async () => {
 
-    initializeNavigation();
+        await initDatabase();
 
-    initializeButtons();
+        await loadStoredDomains();
 
-    generateQuestionnaire();
+        initializeNavigation();
 
-    refreshDashboard();
+        initializeButtons();
 
-});
+        generateQuestionnaire();
 
+        refreshDashboard();
+
+    }
+
+);
 /*
 =========================================
 NAVIGATION
