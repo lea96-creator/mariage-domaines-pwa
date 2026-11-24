@@ -19,13 +19,16 @@ document.addEventListener(
 
         try {
 
+            await initDatabase();
+
             dashboardData =
                 await loadDomains();
 
             renderDashboardWidgets();
 
         }
-        catch (error) {
+
+        catch(error) {
 
             console.error(error);
 
@@ -33,7 +36,6 @@ document.addEventListener(
 
     }
 );
-
 /*
 =========================================
 REFRESH GLOBAL
