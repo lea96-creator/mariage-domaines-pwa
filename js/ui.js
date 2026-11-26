@@ -15,6 +15,8 @@ ui.js — une seule source de vérité
     const $ = id => document.getElementById(id);
 
     let editingId = null;
+    let viewingId = null;
+    let editingFromDetail = false;
 
     /*
     =========================================
@@ -329,6 +331,8 @@ ui.js — une seule source de vérité
     function startNewDomain() {
 
         resetForm();
+        viewingId = null;
+        editingFromDetail = false;
 
         $("visitDate").value = todayISO();
 
@@ -338,7 +342,7 @@ ui.js — une seule source de vérité
 
     }
 
-    function editDomain(id) {
+    function editDomain(id, fromDetail = false) {
 
         const domain = getDomainById(id);
 
@@ -347,6 +351,8 @@ ui.js — une seule source de vérité
         resetForm();
 
         editingId = domain.id;
+        viewingId = domain.id;
+        editingFromDetail = fromDetail;
 
         [
             "domainName",
@@ -415,27 +421,39 @@ ui.js — une seule source de vérité
             ? getDomainById(editingId)
             : null;
 
-        upsertDomain({
-            id: editingId || undefined,
-            domainName: $("domainName").value,
-            visitDate: $("visitDate").value,
-            contactName: $("contactName").value,
-            contactPhone: $("contactPhone").value,
-            contactEmail: $("contactEmail").value,
-            estimatedPrice: $("estimatedPrice").value,
-            answers: collectAnswers(),
-            notes: collectNotes(),
-            generalNotes: $("generalNotes").value,
-            createdAt: existing
-                ? existing.createdAt
-                : undefined
-        });
+        const savedDomain =
+            upsertDomain({
+                id: editingId || undefined,
+                domainName: $("domainName").value,
+                visitDate: $("visitDate").value,
+                contactName: $("contactName").value,
+                contactPhone: $("contactPhone").value,
+                contactEmail: $("contactEmail").value,
+                estimatedPrice: $("estimatedPrice").value,
+                answers: collectAnswers(),
+                notes: collectNotes(),
+                generalNotes: $("generalNotes").value,
+                createdAt: existing
+                    ? existing.createdAt
+                    : undefined
+            });
 
         const saved = persistState();
 
+        const backToDetail =
+            editingFromDetail;
+
         editingId = null;
+        editingFromDetail = false;
+
         render();
-        showPage("dashboard");
+
+        if (backToDetail) {
+            showDomainDetail(savedDomain.id);
+        } else {
+            viewingId = null;
+            showPage("dashboard");
+        }
 
         showToast(
             saved
@@ -467,6 +485,179 @@ ui.js — une seule source de vérité
         render();
 
         showToast(`« ${name} » supprimé`);
+
+    }
+
+    function detailSection(title) {
+
+        const section =
+            document.createElement("section");
+
+        section.className = "detail-section";
+
+        const heading =
+            document.createElement("h3");
+
+        heading.textContent = title;
+        section.appendChild(heading);
+
+        return section;
+
+    }
+
+    function showDomainDetail(id) {
+
+        const domain =
+            getDomainById(id);
+
+        if (!domain) return;
+
+        viewingId = domain.id;
+
+        $("detailTitle").textContent =
+            domain.domainName || "Sans nom";
+
+        $("detailScore").textContent =
+            `Score : ${
+                calculateDomainScore(
+                    domain.answers
+                )
+            } / 100`;
+
+        const content =
+            $("detailContent");
+
+        content.replaceChildren();
+
+        const info =
+            DomainView.filledInfo(domain);
+
+        const groups =
+            DomainView.filledAnswers(domain);
+
+        if (
+            info.length === 0 &&
+            groups.length === 0
+        ) {
+
+            const empty =
+                document.createElement("div");
+
+            empty.className = "empty-state";
+            empty.textContent =
+                "Aucune information renseignée pour ce domaine.";
+
+            content.appendChild(empty);
+
+            showPage("domainDetail");
+            return;
+
+        }
+
+        if (info.length > 0) {
+
+            const section =
+                detailSection("Informations");
+
+            const list =
+                document.createElement("dl");
+
+            list.className = "detail-list";
+
+            info.forEach(item => {
+
+                const term =
+                    document.createElement("dt");
+
+                term.textContent = item.label;
+
+                const value =
+                    document.createElement("dd");
+
+                value.textContent = item.value;
+
+                list.append(term, value);
+
+            });
+
+            section.appendChild(list);
+            content.appendChild(section);
+
+        }
+
+        groups.forEach(group => {
+
+            const section =
+                detailSection(group.title);
+
+            group.questions.forEach(
+                item => {
+
+                    const block =
+                        document.createElement("div");
+
+                    block.className =
+                        "detail-answer";
+
+                    const question =
+                        document.createElement("p");
+
+                    question.className =
+                        "detail-question";
+
+                    question.textContent =
+                        item.question;
+
+                    const answer =
+                        document.createElement("p");
+
+                    answer.className =
+                        "detail-line";
+
+                    const value =
+                        document.createElement("strong");
+
+                    value.textContent =
+                        item.answer ||
+                        "Non renseigné";
+
+                    answer.append(
+                        document.createTextNode(
+                            "Réponse : "
+                        ),
+                        value
+                    );
+
+                    block.append(
+                        question,
+                        answer
+                    );
+
+                    if (item.note) {
+
+                        const note =
+                            document.createElement("p");
+
+                        note.className =
+                            "detail-note";
+
+                        note.textContent =
+                            `Note : ${item.note}`;
+
+                        block.appendChild(note);
+
+                    }
+
+                    section.appendChild(block);
+
+                }
+            );
+
+            content.appendChild(section);
+
+        });
+
+        showPage("domainDetail");
 
     }
 
@@ -634,14 +825,63 @@ ui.js — une seule source de vérité
 
                 item.className = "ranking-item";
 
-                const label =
-                    document.createElement("div");
+                const name =
+                    domain.domainName || "ce domaine";
 
-                label.className = "ranking-label";
-                label.textContent =
+                const label =
+                    document.createElement("button");
+
+                label.type = "button";
+                label.className = "ranking-open";
+                label.dataset.action = "view";
+                label.dataset.id = domain.id;
+                label.setAttribute(
+                    "aria-label",
+                    `Voir la fiche de ${name}`
+                );
+
+                const labelText =
+                    document.createElement("span");
+
+                labelText.textContent =
                     `${ranks.get(domain.id)}. ${
                         domain.domainName || "Sans nom"
                     }`;
+
+                const eye =
+                    document.createElementNS(
+                        SVG_NS,
+                        "svg"
+                    );
+
+                eye.setAttribute(
+                    "class",
+                    "icon"
+                );
+
+                eye.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                eye.setAttribute(
+                    "focusable",
+                    "false"
+                );
+
+                const eyeUse =
+                    document.createElementNS(
+                        SVG_NS,
+                        "use"
+                    );
+
+                eyeUse.setAttribute(
+                    "href",
+                    "#i-view"
+                );
+
+                eye.appendChild(eyeUse);
+                label.append(labelText, eye);
 
                 const right =
                     document.createElement("div");
@@ -655,17 +895,6 @@ ui.js — une seule source de vérité
                 score.textContent =
                     `${calculateDomainScore(domain.answers)}/100`;
 
-                const name =
-                    domain.domainName || "ce domaine";
-
-                const edit =
-                    iconButton(
-                        "i-edit",
-                        `Modifier ${name}`,
-                        "edit",
-                        domain.id
-                    );
-
                 const remove =
                     iconButton(
                         "i-delete",
@@ -676,7 +905,6 @@ ui.js — une seule source de vérité
 
                 right.append(
                     score,
-                    edit,
                     remove
                 );
 
@@ -846,6 +1074,26 @@ ui.js — une seule source de vérité
             () => showPage("dashboard")
         );
 
+        $("btnDetailBack").addEventListener(
+            "click",
+            () => {
+                viewingId = null;
+                showPage("dashboard");
+            }
+        );
+
+        $("btnEditDomain").addEventListener(
+            "click",
+            () => {
+                if (viewingId) {
+                    editDomain(
+                        viewingId,
+                        true
+                    );
+                }
+            }
+        );
+
         $("domainEditor").addEventListener(
             "submit",
             event => {
@@ -893,8 +1141,12 @@ ui.js — une seule source de vérité
 
                     if (!button) return;
 
-                    if (button.dataset.action === "edit") {
-                        editDomain(button.dataset.id);
+                    if (
+                        button.dataset.action === "view"
+                    ) {
+                        showDomainDetail(
+                            button.dataset.id
+                        );
                     } else if (
                         button.dataset.action === "delete"
                     ) {

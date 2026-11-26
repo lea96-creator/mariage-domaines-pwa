@@ -8,20 +8,30 @@ function loadDomainView() {
     const context = {
         console,
         String,
-        Array
+        Number,
+        Object,
+        Array,
+        Set,
+        Map,
+        Math,
+        Date
     };
 
     context.window = context;
 
     vm.createContext(context);
 
-    vm.runInContext(
-        fs.readFileSync(
-            "js/domainView.js",
-            "utf8"
-        ),
-        context
-    );
+    [
+        "js/questions.js",
+        "js/domainView.js"
+    ].forEach(file => {
+
+        vm.runInContext(
+            fs.readFileSync(file, "utf8"),
+            context
+        );
+
+    });
 
     return context.DomainView;
 
@@ -103,6 +113,93 @@ test("unmatched search returns an empty list", () => {
     assert.deepEqual(
         filterDomains(domains, "inconnu"),
         []
+    );
+
+});
+
+test("only filled information is kept", () => {
+
+    const { filledInfo } = loadDomainView();
+
+    const result = filledInfo({
+        domainName: "Domaine test",
+        visitDate: "",
+        contactName: "  Alice  ",
+        contactPhone: "",
+        contactEmail: "",
+        estimatedPrice: 0,
+        generalNotes: ""
+    });
+
+    assert.deepEqual(
+        JSON.parse(JSON.stringify(result)),
+        [
+            {
+                label: "Nom",
+                value: "Domaine test"
+            },
+            {
+                label: "Contact",
+                value: "Alice"
+            },
+            {
+                label: "Prix annoncé",
+                value: "0 €"
+            }
+        ]
+    );
+
+});
+
+test("only answered questions are shown", () => {
+
+    const { filledAnswers } = loadDomainView();
+
+    const result = filledAnswers({
+        answers: {
+            disponibilites_0: "yes",
+            disponibilites_1: "unknown",
+            hebergement_0: ""
+        },
+        notes: {
+            disponibilites_1: "À revérifier",
+            hebergement_0: "Note seule"
+        }
+    });
+
+    assert.deepEqual(
+        JSON.parse(JSON.stringify(result)),
+        [
+            {
+                title:
+                    "Disponibilités et privatisation",
+                questions: [
+                    {
+                        question:
+                            "La date souhaitée est-elle disponible ?",
+                        answer: "Oui",
+                        note: ""
+                    },
+                    {
+                        question:
+                            "Le domaine est-il privatisé du vendredi au lundi ?",
+                        answer: "Inconnu",
+                        note: "À revérifier"
+                    }
+                ]
+            },
+            {
+                title: "Hébergements",
+                questions: [
+                    {
+                        question:
+                            "Nombre de couchages suffisant ?",
+                        answer: "",
+                        note: "Note seule"
+                    }
+                ]
+            }
+        ]
     );
 
 });

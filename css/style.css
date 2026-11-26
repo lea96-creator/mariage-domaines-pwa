@@ -382,8 +382,77 @@ td {
     border-bottom: 1px solid #ececec;
 }
 
-.ranking-label {
+.ranking-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    background: transparent;
+    color: inherit;
+    font-weight: 600;
+    text-align: left;
     overflow-wrap: anywhere;
+}
+
+.ranking-open:hover {
+    color: var(--primary);
+}
+
+.ranking-open .icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.detail-section {
+    margin-top: 16px;
+}
+
+.detail-section h3 {
+    margin-bottom: 8px;
+    color: var(--primary);
+    font-size: 1rem;
+}
+
+.detail-score {
+    margin-bottom: 4px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.detail-list {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.4fr) 1fr;
+    gap: 6px 12px;
+    font-size: 0.9rem;
+}
+
+.detail-list dt {
+    color: var(--text-light);
+}
+
+.detail-list dd {
+    overflow-wrap: anywhere;
+}
+
+.detail-answer {
+    padding: 10px 0;
+    border-bottom: 1px solid #ececec;
+}
+
+.detail-question {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.detail-line,
+.detail-note {
+    font-size: 0.9rem;
+}
+
+.detail-note {
+    margin-top: 4px;
+    color: var(--text-light);
 }
 
 .ranking-right {
