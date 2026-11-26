@@ -5,8 +5,11 @@
 
 :root {
 
+    color-scheme: light;
+
     --primary: #8b5e3c;
     --primary-dark: #6f4b31;
+    --accent: #8b5e3c;
 
     --secondary: #d9c6b0;
 
@@ -20,10 +23,90 @@
     --text: #212529;
     --text-light: #6c757d;
 
+    --border: #ececec;
+    --input-border: #dcdcdc;
+    --field-bg: #ffffff;
+
+    --chip-bg: #e8e1d8;
+    --chip-hover: #ddd3c6;
+    --chip-number-bg: rgba(255, 255, 255, 0.75);
+
+    --complete-bg: #dcebd9;
+    --complete-text: #2b6b3a;
+
+    --hover-bg: #efeae3;
+    --subtle-bg: #f1f1f1;
+
+    --action-bg: rgba(248, 246, 242, 0.96);
+    --action-border: #e7e0d7;
+    --backdrop: rgba(0, 0, 0, 0.45);
+    --focus-ring: rgba(139, 94, 60, 0.15);
+
+    --notify-bg: #212529;
+    --notify-text: #ffffff;
+    --notify-success-bg: #e7f5ec;
+    --notify-success-text: #1b5e2a;
+    --notify-error-bg: #fdecec;
+    --notify-error-text: #8b1d1d;
+    --notify-info-bg: #eef3fb;
+    --notify-info-text: #1f4e79;
+
     --radius: 14px;
     --container-padding: 12px;
     --action-bar: 76px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+}
+
+[data-theme="dark"] {
+
+    color-scheme: dark;
+
+    --primary: #8b5e3c;
+    --primary-dark: #a87d59;
+    --accent: #d9ab83;
+
+    --secondary: #6d5845;
+
+    --background: #191817;
+    --card: #26231f;
+
+    --success: #51cf66;
+    --danger: #ff8787;
+    --info: #74c0fc;
+
+    --text: #f2ede7;
+    --text-light: #aca49b;
+
+    --border: #3b3630;
+    --input-border: #4a4239;
+    --field-bg: #1f1d1a;
+
+    --chip-bg: #3a332b;
+    --chip-hover: #4b4137;
+    --chip-number-bg: rgba(255, 255, 255, 0.12);
+
+    --complete-bg: #28462c;
+    --complete-text: #a9e3b1;
+
+    --hover-bg: #36312a;
+    --subtle-bg: #34302b;
+
+    --action-bg: rgba(25, 24, 23, 0.96);
+    --action-border: #3b3630;
+    --backdrop: rgba(0, 0, 0, 0.66);
+    --focus-ring: rgba(217, 171, 131, 0.3);
+
+    --notify-bg: #3a352f;
+    --notify-text: #f2ede7;
+    --notify-success-bg: #1e3a26;
+    --notify-success-text: #b7f0c2;
+    --notify-error-bg: #462525;
+    --notify-error-text: #ffb3b3;
+    --notify-info-bg: #1d3348;
+    --notify-info-text: #b8dcff;
+
+    --shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 
 }
 
@@ -193,6 +276,16 @@ form {
     outline-color: white;
 }
 
+.top-nav .btn-theme {
+    min-width: 44px;
+    padding: 6px;
+}
+
+.btn-theme[aria-pressed="true"] .icon-moon,
+.btn-theme[aria-pressed="false"] .icon-sun {
+    display: none;
+}
+
 /* =============================
    CARTES
 ============================= */
@@ -207,7 +300,7 @@ form {
 
 .card h2 {
     margin-bottom: 16px;
-    color: var(--primary);
+    color: var(--accent);
     font-size: 1.2rem;
 }
 
@@ -243,7 +336,7 @@ form {
     margin-top: 6px;
     font-size: 1.35rem;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--accent);
     overflow-wrap: anywhere;
 }
 
@@ -270,9 +363,9 @@ textarea,
 select {
     width: 100%;
     padding: 12px;
-    border: 1px solid #dcdcdc;
+    border: 1px solid var(--input-border);
     border-radius: 10px;
-    background: white;
+    background: var(--field-bg);
     font-size: 1rem;
     color: inherit;
     scroll-margin-top: 100px;
@@ -287,8 +380,8 @@ input:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.15);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 /* =============================
@@ -296,9 +389,9 @@ select:focus {
 ============================= */
 
 .question {
-    background: white;
+    background: var(--field-bg);
     border-radius: 12px;
-    border: 1px solid #ececec;
+    border: 1px solid var(--border);
     padding: 12px;
     margin-bottom: 12px;
 }
@@ -333,8 +426,8 @@ button {
 }
 
 .btn-secondary {
-    background: #dee2e6;
-    color: #333;
+    background: var(--chip-bg);
+    color: var(--text);
 }
 
 .top-actions {
@@ -390,7 +483,7 @@ button {
 }
 
 .btn-back:hover {
-    background: #efeae3;
+    background: var(--hover-bg);
     color: var(--text);
 }
 
@@ -425,7 +518,7 @@ button {
     min-height: 38px;
     padding: 7px 10px;
     border-radius: 999px;
-    background: #e8e1d8;
+    background: var(--chip-bg);
     color: var(--text-light);
     font-size: 0.8rem;
     white-space: nowrap;
@@ -439,7 +532,7 @@ button {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.75);
+    background: var(--chip-number-bg);
     color: var(--text);
     font-size: 0.72rem;
     font-weight: 700;
@@ -456,8 +549,8 @@ button {
 }
 
 .form-step-button[data-complete="true"]:not([aria-current="step"]) {
-    background: #dcebd9;
-    color: #2b6b3a;
+    background: var(--complete-bg);
+    color: var(--complete-text);
 }
 
 .form-step-button[data-complete="true"]
@@ -467,7 +560,7 @@ button {
 }
 
 .form-step-button:focus-visible {
-    outline-color: var(--primary);
+    outline-color: var(--accent);
 }
 
 .form-step[hidden] {
@@ -486,14 +579,14 @@ button {
     min-height: 44px;
     padding: 10px 12px;
     border-radius: 10px;
-    background: #e8e1d8;
+    background: var(--chip-bg);
     color: var(--text);
     font-size: 0.9rem;
     font-weight: 600;
 }
 
 .btn-step-nav:hover:not(:disabled) {
-    background: #ddd3c6;
+    background: var(--chip-hover);
 }
 
 .btn-step-nav:disabled {
@@ -525,7 +618,7 @@ button {
 .question-panel-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: var(--backdrop);
 }
 
 .question-panel-sheet {
@@ -559,7 +652,7 @@ button {
     width: 100%;
     padding: 10px 12px;
     border-radius: 10px;
-    background: white;
+    background: var(--field-bg);
     font-weight: 700;
     text-align: left;
 }
@@ -590,7 +683,7 @@ button {
 }
 
 .question-panel-question:hover {
-    background: white;
+    background: var(--field-bg);
     color: var(--text);
 }
 
@@ -606,8 +699,8 @@ button {
     padding: 12px 0 calc(
         12px + env(safe-area-inset-bottom, 0px)
     );
-    border-top: 1px solid #e7e0d7;
-    background: rgba(248, 246, 242, 0.96);
+    border-top: 1px solid var(--action-border);
+    background: var(--action-bg);
     backdrop-filter: blur(8px);
 }
 
@@ -634,7 +727,7 @@ button {
 }
 
 .btn-icon:hover {
-    background: #f1f1f1;
+    background: var(--subtle-bg);
 }
 
 .btn-icon .icon {
@@ -680,7 +773,7 @@ th {
 
 td {
     padding: 10px;
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--border);
 }
 
 /* =============================
@@ -706,7 +799,7 @@ td {
     align-items: center;
     gap: 10px;
     padding: 10px 2px;
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--border);
 }
 
 .ranking-open {
@@ -722,7 +815,7 @@ td {
 }
 
 .ranking-open:hover {
-    color: var(--primary);
+    color: var(--accent);
 }
 
 .ranking-open .icon {
@@ -737,14 +830,14 @@ td {
 
 .detail-section h3 {
     margin-bottom: 8px;
-    color: var(--primary);
+    color: var(--accent);
     font-size: 1rem;
 }
 
 .detail-score {
     margin-bottom: 4px;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--accent);
 }
 
 .detail-list {
@@ -764,7 +857,7 @@ td {
 
 .detail-answer {
     padding: 10px 0;
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--border);
 }
 
 .detail-question {
@@ -791,7 +884,7 @@ td {
 
 .ranking-score {
     font-weight: 700;
-    color: var(--primary);
+    color: var(--accent);
     margin-right: 4px;
 }
 
@@ -825,8 +918,8 @@ td {
     padding: 12px 16px;
     border-left: 4px solid transparent;
     border-radius: 10px;
-    background: #212529;
-    color: white;
+    background: var(--notify-bg);
+    color: var(--notify-text);
     font-size: 0.9rem;
     line-height: 1.35;
     text-align: center;
@@ -844,20 +937,20 @@ td {
 }
 
 .notification[data-type="success"] {
-    background: #e7f5ec;
-    color: #1b5e2a;
+    background: var(--notify-success-bg);
+    color: var(--notify-success-text);
     border-left-color: var(--success);
 }
 
 .notification[data-type="error"] {
-    background: #fdecec;
-    color: #8b1d1d;
+    background: var(--notify-error-bg);
+    color: var(--notify-error-text);
     border-left-color: var(--danger);
 }
 
 .notification[data-type="info"] {
-    background: #eef3fb;
-    color: #1f4e79;
+    background: var(--notify-info-bg);
+    color: var(--notify-info-text);
     border-left-color: var(--info);
 }
 
@@ -866,7 +959,7 @@ td {
 ============================= */
 
 :focus-visible {
-    outline: 3px solid var(--primary);
+    outline: 3px solid var(--accent);
     outline-offset: 2px;
 }
 

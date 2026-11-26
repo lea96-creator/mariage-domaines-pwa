@@ -15,6 +15,9 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
   « Domaines » ramène à l’accueil.
 - Les boutons **Enregistrer / Modifier** et **Retour** restent accessibles en
   bas de l’écran pendant le défilement.
+- Le bouton clair/sombre est dans l’en-tête. Au départ, l’application suit le
+  réglage du téléphone ou de l’ordinateur ; dès qu’on appuie sur le bouton, le
+  choix est mémorisé sur l’appareil.
 - Le formulaire de visite est découpé en étapes : informations, une étape par
   catégorie de questions, puis notes et score. Les étapes déjà remplies sont
   signalées ; le bouton **Questions** ouvre la liste complète pour sauter
@@ -128,6 +131,7 @@ css/style.css            styles
 data/questions.json      catalogue éditable des questions
 js/questions.js          repli du catalogue, index, calcul du score
 js/questionLoader.js     chargement et validation du JSON
+js/theme.js              thème clair/sombre et mémorisation du choix
 js/store.js              état local + CRUD + sauvegarde
 js/domainView.js         recherche et fiche de lecture
 js/formSteps.js          étapes du formulaire et questions associées
