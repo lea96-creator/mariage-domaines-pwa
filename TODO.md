@@ -10,17 +10,6 @@ Notes à reprendre à la prochaine session. Rien de bloquant pour la PR en cours
   - pouvoir revenir facilement à une page déjà remplie ;
   - garder l’accès à la liste des questions depuis chaque page.
 
-## Interface
-
-- Améliorer le CSS des notifications : succès, erreur, information.
-- Éviter de modifier le DOM existant pour afficher ou masquer une notification.
-- Préférer un calque dédié, placé par-dessus la page avec les profondeurs (`z-index`).
-
-## Affichage
-
-- Optimiser les pages pour voir toutes les parties utiles sans faire défiler la page pour rien.
-- Vérifier le rendu sur téléphone et sur ordinateur.
-
 ## Liste des questions
 
 - À faire dans une autre itération / une autre PR.

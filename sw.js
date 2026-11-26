@@ -8,7 +8,7 @@ nouvelle version supprime l'ancien cache.
 =========================================
 */
 
-const CACHE_VERSION = "v2.0.0";
+const CACHE_VERSION = "v2.1.0";
 const CACHE_NAME = `wedding-domaines-${CACHE_VERSION}`;
 
 const APP_ASSETS = [

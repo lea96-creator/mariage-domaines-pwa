@@ -15,7 +15,6 @@ ui.js — une seule source de vérité
     const $ = id => document.getElementById(id);
 
     let editingId = null;
-    let toastTimer = null;
 
     /*
     =========================================
@@ -898,21 +897,47 @@ ui.js — une seule source de vérité
 
     function showToast(message, type = "success") {
 
-        const toast = $("toast");
+        const layer =
+            $("notificationLayer");
 
-        if (!toast) return;
+        if (!layer) return;
 
-        window.clearTimeout(toastTimer);
+        const kind =
+            ["success", "error", "info"]
+                .includes(type)
+                ? type
+                : "info";
 
-        toast.textContent = message;
+        const notification =
+            document.createElement("div");
 
-        toast.className =
-            `toast show ${type}`;
+        notification.className = "notification";
+        notification.dataset.type = kind;
+        notification.textContent = message;
 
-        toastTimer = window.setTimeout(
+        layer.appendChild(notification);
+
+        while (layer.children.length > 3) {
+            layer.firstElementChild.remove();
+        }
+
+        window.requestAnimationFrame(
+            () => {
+                notification.dataset.visible =
+                    "true";
+            }
+        );
+
+        window.setTimeout(
             () => {
 
-                toast.className = "toast";
+                notification.dataset.visible =
+                    "false";
+
+                window.setTimeout(
+                    () => notification.remove(),
+                    250
+                );
 
             },
             4000
