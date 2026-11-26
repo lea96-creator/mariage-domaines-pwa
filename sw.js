@@ -21,6 +21,7 @@ const APP_ASSETS = [
 
     "./js/questions.js",
     "./js/store.js",
+    "./js/domainView.js",
     "./js/excelExport.js",
     "./js/transfer.js",
     "./js/ui.js",

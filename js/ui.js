@@ -579,9 +579,9 @@ ui.js — une seule source de vérité
 
         list.replaceChildren();
 
-        const sorted = sortedDomains();
+        const ranked = sortedDomains();
 
-        if (sorted.length === 0) {
+        if (ranked.length === 0) {
 
             const empty =
                 document.createElement("div");
@@ -595,8 +595,39 @@ ui.js — une seule source de vérité
 
         }
 
-        sorted.forEach(
-            (domain, index) => {
+        const search = $("domainSearch");
+        const query =
+            search ? search.value : "";
+
+        const visible =
+            DomainView.filterDomains(
+                ranked,
+                query
+            );
+
+        if (visible.length === 0) {
+
+            const empty =
+                document.createElement("div");
+
+            empty.className = "empty-state";
+            empty.textContent =
+                "Aucun domaine ne correspond à la recherche.";
+
+            list.appendChild(empty);
+            return;
+
+        }
+
+        const ranks = new Map(
+            ranked.map(
+                (domain, index) =>
+                    [domain.id, index + 1]
+            )
+        );
+
+        visible.forEach(
+            domain => {
 
                 const item =
                     document.createElement("div");
@@ -608,7 +639,7 @@ ui.js — une seule source de vérité
 
                 label.className = "ranking-label";
                 label.textContent =
-                    `${index + 1}. ${
+                    `${ranks.get(domain.id)}. ${
                         domain.domainName || "Sans nom"
                     }`;
 
@@ -840,6 +871,15 @@ ui.js — une seule source de vérité
 
                 }
             );
+
+        const search = $("domainSearch");
+
+        if (search) {
+            search.addEventListener(
+                "input",
+                renderRanking
+            );
+        }
 
         $("rankingList")
             .addEventListener(

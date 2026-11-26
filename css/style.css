@@ -357,8 +357,21 @@ td {
 }
 
 /* =============================
-   CLASSEMENT
+   RECHERCHE ET CLASSEMENT
 ============================= */
+
+.search-field {
+    margin-bottom: 12px;
+}
+
+.search-field label {
+    margin-top: 0;
+    font-size: 0.85rem;
+}
+
+.search-field input {
+    margin-top: 4px;
+}
 
 .ranking-item {
     display: flex;

@@ -13,6 +13,7 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
 - Une seule page (`index.html`) avec trois écrans : accueil, visite, comparatif.
 - Les domaines sont stockés dans `localStorage` sous la clé `wedding-domaines:v1`.
 - Chaque domaine peut être créé, modifié et supprimé depuis le classement.
+- Le classement peut être filtré avec le champ de recherche.
 - Le score est calculé à partir du catalogue `js/questions.js` :
   - `Oui = 10`, `Partiel = 5`, `Non = 0` ;
   - `Inconnu` et les questions sans réponse sont neutres ;
@@ -101,6 +102,7 @@ index.html               interface
 css/style.css            styles
 js/questions.js          catalogue, pondérations, calcul du score
 js/store.js              état local + CRUD + sauvegarde
+js/domainView.js         recherche et fiche de lecture
 js/transfer.js           partage / import du fichier JSON
 js/excelExport.js        génération du classeur
 js/ui.js                 rendu et événements
