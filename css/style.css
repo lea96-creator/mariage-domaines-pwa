@@ -20,7 +20,6 @@
     --text: #212529;
     --text-light: #6c757d;
 
-    --nav-height: 70px;
     --radius: 14px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
@@ -49,7 +48,7 @@ body {
         sans-serif;
     background: var(--background);
     color: var(--text);
-    padding-bottom: calc(var(--nav-height) + 16px);
+    padding-bottom: 24px;
 }
 
 /* =============================
@@ -102,21 +101,64 @@ form {
 ============================= */
 
 .header {
+    position: sticky;
+    top: 0;
+    z-index: 900;
     background: var(--primary);
     color: white;
-    padding: 14px 16px;
-    text-align: center;
-    box-shadow: var(--shadow);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
 }
 
-.header h1 {
-    font-size: 1.5rem;
-    margin-bottom: 6px;
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
-.header p {
-    opacity: 0.9;
-    font-size: 0.9rem;
+.brand h1 {
+    font-size: 1rem;
+    line-height: 1.1;
+}
+
+.brand p {
+    display: none;
+}
+
+.top-nav {
+    display: flex;
+    gap: 4px;
+}
+
+.top-nav button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 64px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.68rem;
+    line-height: 1.1;
+}
+
+.top-nav button[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.16);
+    color: white;
+    font-weight: 700;
+}
+
+.top-nav .icon {
+    width: 18px;
+    height: 18px;
+}
+
+.top-nav button:focus-visible {
+    outline-color: white;
 }
 
 /* =============================
@@ -201,6 +243,7 @@ select {
     background: white;
     font-size: 1rem;
     color: inherit;
+    scroll-margin-top: 100px;
 }
 
 textarea {
@@ -269,13 +312,19 @@ button {
 
 .top-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 8px;
     margin-bottom: 8px;
 }
 
 .top-actions.secondary {
-    margin-bottom: 8px;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 12px;
+}
+
+.top-actions.secondary button {
+    padding: 10px 4px;
+    font-size: 0.82rem;
+    line-height: 1.2;
 }
 
 .top-actions button,
@@ -288,15 +337,16 @@ button {
 
 .actions {
     position: sticky;
-    bottom: calc(var(--nav-height) + 8px);
+    bottom: 16px;
     z-index: 500;
     display: grid;
+    grid-template-columns: 1fr auto;
     gap: 8px;
     margin: 12px 0 16px;
     padding: 10px;
     border-radius: 12px;
-    background: rgba(248, 246, 242, 0.95);
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+    background: rgba(248, 246, 242, 0.96);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .btn-icon {
@@ -479,56 +529,13 @@ td {
 }
 
 /* =============================
-   MENU BAS
-============================= */
-
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: var(--nav-height);
-    background: white;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
-    z-index: 999;
-}
-
-.bottom-nav button {
-    background: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    color: #555;
-    font-size: 1rem;
-    padding: 8px 16px;
-}
-
-.bottom-nav button[aria-current="page"] {
-    color: var(--primary);
-    font-weight: 700;
-}
-
-.bottom-nav .icon {
-    width: 24px;
-    height: 24px;
-}
-
-.bottom-nav span {
-    font-size: 0.75rem;
-}
-
-/* =============================
    NOTIFICATIONS
 ============================= */
 
 .notification-layer {
     position: fixed;
     left: 50%;
-    bottom: calc(var(--nav-height) + 16px);
+    bottom: 92px;
     transform: translateX(-50%);
     z-index: 2000;
     display: grid;
@@ -608,16 +615,32 @@ td {
         padding: 20px;
     }
 
-    .header {
-        padding: 18px 20px;
+    .header-inner {
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
-    .header h1 {
-        font-size: 2rem;
+    .brand h1 {
+        font-size: 1.15rem;
     }
 
-    .actions {
-        grid-template-columns: 1fr 1fr;
+    .brand p {
+        display: block;
+        font-size: 0.8rem;
+        opacity: 0.85;
+    }
+
+    .top-nav button {
+        flex-direction: row;
+        gap: 6px;
+        min-width: 0;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .top-nav .icon {
+        width: 16px;
+        height: 16px;
     }
 
 }

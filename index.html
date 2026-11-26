@@ -54,13 +54,40 @@
 </svg>
 
 <header class="header">
-    <div class="container">
+    <div class="container header-inner">
 
-        <h1>Wedding Domaines Planner</h1>
+        <div class="brand">
+            <h1>Domaines</h1>
+            <p>Planificateur de mariage</p>
+        </div>
 
-        <p>
-            Comparateur de domaines pour mariage sur 4 jours
-        </p>
+        <nav class="top-nav" aria-label="Navigation principale">
+
+            <button
+                type="button"
+                data-page="dashboard"
+                aria-current="page">
+
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"></use></svg>
+                <span>Accueil</span>
+
+            </button>
+
+            <button type="button" data-page="domainForm">
+
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-visit"></use></svg>
+                <span>Visite</span>
+
+            </button>
+
+            <button type="button" data-page="comparisonPage">
+
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg>
+                <span>Comparatif</span>
+
+            </button>
+
+        </nav>
 
     </div>
 </header>
@@ -73,7 +100,7 @@
 
         <div class="container">
 
-            <div class="top-actions">
+            <div class="top-actions primary-action">
 
                 <button
                     id="btnNewDomain"
@@ -84,6 +111,10 @@
 
                 </button>
 
+            </div>
+
+            <div class="top-actions secondary">
+
                 <button
                     id="btnExportExcel"
                     type="button"
@@ -93,16 +124,12 @@
 
                 </button>
 
-            </div>
-
-            <div class="top-actions secondary">
-
                 <button
                     id="btnBackup"
                     type="button"
                     class="btn-secondary">
 
-                    Sauvegarde JSON
+                    Sauvegarde
 
                 </button>
 
@@ -304,7 +331,7 @@
 
                 <!-- ACTIONS -->
 
-                <div class="actions">
+                <div class="actions form-actions">
 
                     <button
                         id="btnSave"
@@ -351,31 +378,6 @@
     </section>
 
 </main>
-
-<nav class="bottom-nav" aria-label="Navigation principale">
-
-    <button type="button" data-page="dashboard" aria-current="page">
-
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"></use></svg>
-        <span>Accueil</span>
-
-    </button>
-
-    <button type="button" data-page="domainForm">
-
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-visit"></use></svg>
-        <span>Visite</span>
-
-    </button>
-
-    <button type="button" data-page="comparisonPage">
-
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg>
-        <span>Comparatif</span>
-
-    </button>
-
-</nav>
 
 <!-- Calque dédié aux notifications, au-dessus du reste de la page -->
 <div

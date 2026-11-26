@@ -59,7 +59,7 @@ ui.js — une seule source de vérité
             });
 
         document
-            .querySelectorAll(".bottom-nav button")
+            .querySelectorAll(".top-nav button")
             .forEach(button => {
 
                 const active =
@@ -1053,7 +1053,7 @@ ui.js — une seule source de vérité
 
         document
             .querySelectorAll(
-                ".bottom-nav button"
+                ".top-nav button"
             )
             .forEach(button => {
 
