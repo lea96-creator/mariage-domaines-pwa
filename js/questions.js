@@ -5,7 +5,7 @@ questions.js — catalogue, réponses, score
 =========================================
 */
 
-const QUESTION_CATEGORIES = [
+const DEFAULT_QUESTION_CATEGORIES = [
 
 {
     id: "disponibilites",
@@ -207,6 +207,9 @@ const QUESTION_CATEGORIES = [
 
 ];
 
+let QUESTION_CATEGORIES =
+    DEFAULT_QUESTION_CATEGORIES;
+
 /*
 =========================================
 RÉPONSES
@@ -241,32 +244,73 @@ INDEX DES QUESTIONS
 =========================================
 */
 
-const QUESTION_INDEX = new Map();
+let QUESTION_INDEX = new Map();
 
-QUESTION_CATEGORIES.forEach(category => {
+let TOTAL_QUESTIONS = 0;
 
-    category.questions.forEach((question, index) => {
+let TOTAL_WEIGHT = 0;
 
-        const id = `${category.id}_${index}`;
+function setQuestionCategories(categories) {
 
-        QUESTION_INDEX.set(id, {
-            id,
-            question,
-            category,
-            index
-        });
+    QUESTION_CATEGORIES =
+        Array.isArray(categories) && categories.length
+            ? categories
+            : DEFAULT_QUESTION_CATEGORIES;
 
-    });
+    const index = new Map();
 
-});
+    QUESTION_CATEGORIES.forEach(
+        category => {
 
-const TOTAL_QUESTIONS = QUESTION_INDEX.size;
+            category.questions.forEach(
+                (question, questionIndex) => {
 
-const TOTAL_WEIGHT =
-    QUESTION_CATEGORIES.reduce(
-        (sum, category) => sum + category.weight,
-        0
+                    const id =
+                        `${category.id}_${questionIndex}`;
+
+                    index.set(id, {
+                        id,
+                        question,
+                        category,
+                        index: questionIndex
+                    });
+
+                }
+            );
+
+        }
     );
+
+    QUESTION_INDEX = index;
+    TOTAL_QUESTIONS = index.size;
+
+    TOTAL_WEIGHT =
+        QUESTION_CATEGORIES.reduce(
+            (sum, category) =>
+                sum + category.weight,
+            0
+        );
+
+    return QUESTION_CATEGORIES;
+
+}
+
+setQuestionCategories(
+    DEFAULT_QUESTION_CATEGORIES
+);
+
+if (typeof window !== "undefined") {
+
+    window.QuestionCatalogue = {
+        defaults: DEFAULT_QUESTION_CATEGORIES,
+        getCategories: () => QUESTION_CATEGORIES,
+        setCategories: setQuestionCategories,
+        getIndex: () => QUESTION_INDEX,
+        getTotalQuestions: () => TOTAL_QUESTIONS,
+        getTotalWeight: () => TOTAL_WEIGHT
+    };
+
+}
 
 /*
 =========================================

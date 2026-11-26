@@ -8,7 +8,7 @@ nouvelle version supprime l'ancien cache.
 =========================================
 */
 
-const CACHE_VERSION = "v2.5.0";
+const CACHE_VERSION = "v2.6.0";
 const CACHE_NAME = `wedding-domaines-${CACHE_VERSION}`;
 
 const APP_ASSETS = [
@@ -18,8 +18,10 @@ const APP_ASSETS = [
 
     "./manifest.json",
     "./css/style.css",
+    "./data/questions.json",
 
     "./js/questions.js",
+    "./js/questionLoader.js",
     "./js/store.js",
     "./js/domainView.js",
     "./js/formSteps.js",

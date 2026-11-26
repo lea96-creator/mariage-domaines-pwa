@@ -29,9 +29,10 @@ ui.js — une seule source de vérité
 
     document.addEventListener(
         "DOMContentLoaded",
-        () => {
+        async () => {
 
             loadState();
+            await loadQuestions();
 
             buildQuestionnaire();
             bindEvents();
@@ -41,6 +42,14 @@ ui.js — une seule source de vérité
 
         }
     );
+
+    async function loadQuestions() {
+
+        if (!window.QuestionLoader) return;
+
+        await window.QuestionLoader.load();
+
+    }
 
     /*
     =========================================

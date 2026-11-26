@@ -25,7 +25,11 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
 - Cliquer un domaine ouvre sa fiche en lecture seule, avec seulement les
   champs remplis. Le bouton **Modifier** ouvre le formulaire, puis on revient
   à la fiche après enregistrement.
-- Le score est calculé à partir du catalogue `js/questions.js` :
+- Le catalogue des questions est dans `data/questions.json`. Modifier ce
+  fichier, publier à nouveau le site et la liste se met à jour sans compilation.
+  Si le fichier est absent ou invalide, l’application utilise la copie intégrée
+  dans `js/questions.js` pour continuer à fonctionner.
+- Le score est calculé à partir du catalogue chargé :
   - `Oui = 10`, `Partiel = 5`, `Non = 0` ;
   - `Inconnu` et les questions sans réponse sont neutres ;
   - chaque catégorie est notée sur 10 puis pondérée (`poids` total = 100).
@@ -121,7 +125,9 @@ Structure :
 ```
 index.html               interface
 css/style.css            styles
-js/questions.js          catalogue, pondérations, calcul du score
+data/questions.json      catalogue éditable des questions
+js/questions.js          repli du catalogue, index, calcul du score
+js/questionLoader.js     chargement et validation du JSON
 js/store.js              état local + CRUD + sauvegarde
 js/domainView.js         recherche et fiche de lecture
 js/formSteps.js          étapes du formulaire et questions associées
@@ -135,6 +141,7 @@ manifest.json            installation PWA
 tests/state.test.mjs     tests
 tests/domainView.test.mjs tests de la recherche et de la fiche
 tests/formSteps.test.mjs tests des étapes du formulaire
+tests/questionLoader.test.mjs tests du catalogue JSON
 tests/serve.test.mjs     tests de l'injection des fixtures
 scripts/serve.mjs        serveur statique local avec injection de dev
 ```
