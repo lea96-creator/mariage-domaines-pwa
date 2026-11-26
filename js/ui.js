@@ -109,7 +109,19 @@ ui.js — une seule source de vérité
 
         }
 
-        window.scrollTo(0, 0);
+        document.body.classList.toggle(
+            "form-active",
+            pageId === "domainForm"
+        );
+
+        const activeScroll =
+            document.querySelector(
+                ".page.active .page-scroll"
+            );
+
+        if (activeScroll) {
+            activeScroll.scrollTop = 0;
+        }
 
     }
 
@@ -481,7 +493,34 @@ ui.js — une seule source de vérité
         updateStepStates();
 
         if (options.scroll !== false) {
-            window.scrollTo(0, 0);
+            const form = $("domainForm");
+            const scroll =
+                form && form.querySelector(".page-scroll");
+
+            if (scroll) {
+                scroll.scrollTop = 0;
+            }
+
+        }
+
+        const steps = $("formSteps");
+
+        if (steps) {
+
+            const active = steps.querySelector(
+                'button[aria-current="step"]'
+            );
+
+            if (
+                active &&
+                active.scrollIntoView
+            ) {
+                active.scrollIntoView({
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            }
+
         }
 
     }
@@ -1033,42 +1072,40 @@ ui.js — une seule source de vérité
                     const block =
                         document.createElement("div");
 
-                    block.className =
-                        "detail-answer";
+                    block.className = "question";
+
+                    const main =
+                        document.createElement("div");
+
+                    main.className = "question-main";
 
                     const question =
-                        document.createElement("p");
+                        document.createElement("span");
 
                     question.className =
-                        "detail-question";
+                        "question-title";
 
                     question.textContent =
                         item.question;
 
                     const answer =
-                        document.createElement("p");
+                        document.createElement("span");
 
                     answer.className =
-                        "detail-line";
-
-                    const value =
-                        document.createElement("strong");
-
-                    value.textContent =
+                        "question-answer-static";
+                    answer.textContent =
                         item.answer ||
                         "Non renseigné";
-
-                    answer.append(
-                        document.createTextNode(
-                            "Réponse : "
-                        ),
-                        value
+                    answer.setAttribute(
+                        "aria-label",
+                        `Réponse : ${answer.textContent}`
                     );
 
-                    block.append(
+                    main.append(
                         question,
                         answer
                     );
+                    block.appendChild(main);
 
                     if (item.note) {
 
@@ -1076,10 +1113,13 @@ ui.js — une seule source de vérité
                             document.createElement("p");
 
                         note.className =
-                            "detail-note";
+                            "question-note-static";
 
-                        note.textContent =
-                            `Note : ${item.note}`;
+                        note.textContent = item.note;
+                        note.setAttribute(
+                            "aria-label",
+                            `Note : ${item.note}`
+                        );
 
                         block.appendChild(note);
 

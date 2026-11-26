@@ -143,6 +143,15 @@
         </nav>
 
     </div>
+
+    <!-- Étapes de la visite, affichées uniquement sur cette page -->
+    <div
+        id="formSteps"
+        class="form-steps header-steps"
+        role="tablist"
+        aria-label="Étapes du formulaire">
+    </div>
+
 </header>
 
 <main>
@@ -153,99 +162,103 @@
 
         <div class="container">
 
-            <div class="top-actions primary-action">
+            <div class="page-scroll">
 
-                <button
-                    id="btnNewDomain"
-                    type="button"
-                    class="btn-primary">
+                <div class="top-actions primary-action">
 
-                    Nouveau domaine
+                    <button
+                        id="btnNewDomain"
+                        type="button"
+                        class="btn-primary">
 
-                </button>
+                        Nouveau domaine
 
-            </div>
+                    </button>
 
-            <div class="top-actions secondary">
-
-                <button
-                    id="btnExportExcel"
-                    type="button"
-                    class="btn-secondary">
-
-                    Export Excel
-
-                </button>
-
-                <button
-                    id="btnBackup"
-                    type="button"
-                    class="btn-secondary">
-
-                    Sauvegarde
-
-                </button>
-
-                <button
-                    id="btnRestore"
-                    type="button"
-                    class="btn-secondary">
-
-                    Restaurer
-
-                </button>
-
-                <input
-                    type="file"
-                    id="importFile"
-                    accept="application/json,.json"
-                    hidden>
-
-            </div>
-
-            <p class="hint">
-                Vos données restent sur cet appareil. Faites une sauvegarde
-                pour les transférer (téléphone vers PC).
-            </p>
-
-            <div class="stats-grid">
-
-                <div class="card stat">
-                    <h3>Domaines</h3>
-                    <span id="totalDomains">0</span>
                 </div>
 
-                <div class="card stat">
-                    <h3>Meilleure note</h3>
-                    <span id="bestScore">0</span>
-                </div>
+                <div class="top-actions secondary">
 
-                <div class="card stat">
-                    <h3>Coup de cœur</h3>
-                    <span id="favoriteDomain">-</span>
-                </div>
+                    <button
+                        id="btnExportExcel"
+                        type="button"
+                        class="btn-secondary">
 
-            </div>
+                        Export Excel
 
-            <div class="card">
+                    </button>
 
-                <h2>Classement automatique</h2>
+                    <button
+                        id="btnBackup"
+                        type="button"
+                        class="btn-secondary">
 
-                <div class="search-field">
-                    <label for="domainSearch">
-                        Rechercher un domaine
-                    </label>
+                        Sauvegarde
+
+                    </button>
+
+                    <button
+                        id="btnRestore"
+                        type="button"
+                        class="btn-secondary">
+
+                        Restaurer
+
+                    </button>
+
                     <input
-                        type="search"
-                        id="domainSearch"
-                        placeholder="Nom, contact ou note"
-                        autocomplete="off">
+                        type="file"
+                        id="importFile"
+                        accept="application/json,.json"
+                        hidden>
+
                 </div>
 
-                <div id="rankingList">
+                <p class="hint">
+                    Vos données restent sur cet appareil. Faites une sauvegarde
+                    pour les transférer (téléphone vers PC).
+                </p>
 
-                    <div class="empty-state">
-                        Aucun domaine enregistré
+                <div class="stats-grid">
+
+                    <div class="card stat">
+                        <h3>Domaines</h3>
+                        <span id="totalDomains">0</span>
+                    </div>
+
+                    <div class="card stat">
+                        <h3>Meilleure note</h3>
+                        <span id="bestScore">0</span>
+                    </div>
+
+                    <div class="card stat">
+                        <h3>Coup de cœur</h3>
+                        <span id="favoriteDomain">-</span>
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Classement automatique</h2>
+
+                    <div class="search-field">
+                        <label for="domainSearch">
+                            Rechercher un domaine
+                        </label>
+                        <input
+                            type="search"
+                            id="domainSearch"
+                            placeholder="Nom, contact ou note"
+                            autocomplete="off">
+                    </div>
+
+                    <div id="rankingList">
+
+                        <div class="empty-state">
+                            Aucun domaine enregistré
+                        </div>
+
                     </div>
 
                 </div>
@@ -260,18 +273,22 @@
 
     <section id="domainDetail" class="page">
 
-        <div class="container">
+        <div class="container container-reading">
 
-            <div class="card detail-card">
+            <div class="page-scroll">
 
-                <h2 id="detailTitle">Fiche du domaine</h2>
+                <div class="card detail-card">
 
-                <p
-                    id="detailScore"
-                    class="detail-score">
-                </p>
+                    <h2 id="detailTitle">Fiche du domaine</h2>
 
-                <div id="detailContent"></div>
+                    <p
+                        id="detailScore"
+                        class="detail-score">
+                    </p>
+
+                    <div id="detailContent"></div>
+
+                </div>
 
             </div>
 
@@ -308,16 +325,9 @@
 
     <section id="domainForm" class="page">
 
-        <div class="container container-wide">
+        <div class="container container-reading">
 
-            <form id="domainEditor">
-
-                <div
-                    id="formSteps"
-                    class="form-steps"
-                    role="tablist"
-                    aria-label="Étapes du formulaire">
-                </div>
+            <form id="domainEditor" class="page-scroll">
 
                 <div class="card form-step" data-step="info">
 
@@ -390,77 +400,78 @@
 
                 </div>
 
-                <!-- ACTIONS ET NAVIGATION ENTRE LES ÉTAPES -->
+            </form>
 
-                <div class="actions form-actions">
+            <!-- ACTIONS ET NAVIGATION ENTRE LES ÉTAPES -->
+
+            <div class="actions form-actions">
+
+                <button
+                    id="btnBack"
+                    type="button"
+                    class="btn-back"
+                    aria-label="Retour au classement">
+
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"></use></svg>
+                    <span id="btnBackLabel">Retour</span>
+
+                </button>
+
+                <div
+                    class="step-controls"
+                    role="group"
+                    aria-label="Navigation entre les étapes">
 
                     <button
-                        id="btnBack"
+                        id="btnPrevStep"
                         type="button"
-                        class="btn-back"
-                        aria-label="Retour au classement">
+                        class="btn-step-nav"
+                        aria-label="Étape précédente"
+                        title="Étape précédente">
 
                         <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"></use></svg>
-                        <span id="btnBackLabel">Retour</span>
+                        <span>Précédent</span>
 
                     </button>
 
-                    <div
-                        class="step-controls"
-                        role="group"
-                        aria-label="Navigation entre les étapes">
+                    <button
+                        id="btnQuestions"
+                        type="button"
+                        class="btn-step-nav"
+                        aria-label="Liste des questions"
+                        title="Liste des questions">
 
-                        <button
-                            id="btnPrevStep"
-                            type="button"
-                            class="btn-step-nav"
-                            aria-label="Étape précédente"
-                            title="Étape précédente">
+                        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"></use></svg>
+                        <span>Questions</span>
 
-                            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"></use></svg>
-                            <span>Précédent</span>
-
-                        </button>
-
-                        <button
-                            id="btnQuestions"
-                            type="button"
-                            class="btn-step-nav"
-                            aria-label="Liste des questions"
-                            title="Liste des questions">
-
-                            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"></use></svg>
-                            <span>Questions</span>
-
-                        </button>
-
-                        <button
-                            id="btnNextStep"
-                            type="button"
-                            class="btn-step-nav"
-                            aria-label="Étape suivante"
-                            title="Étape suivante">
-
-                            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-forward"></use></svg>
-                            <span>Suivant</span>
-
-                        </button>
-
-                    </div>
+                    </button>
 
                     <button
-                        id="btnSave"
-                        type="submit"
-                        class="btn-primary btn-action">
+                        id="btnNextStep"
+                        type="button"
+                        class="btn-step-nav"
+                        aria-label="Étape suivante"
+                        title="Étape suivante">
 
-                        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-save"></use></svg>
-                        Enregistrer
+                        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-forward"></use></svg>
+                        <span>Suivant</span>
 
                     </button>
 
                 </div>
 
-            </form>
+                <button
+                    id="btnSave"
+                    type="submit"
+                    form="domainEditor"
+                    class="btn-primary btn-action">
+
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-save"></use></svg>
+                    Enregistrer
+
+                </button>
+
+            </div>
 
             <!-- LISTE COMPLÈTE DES QUESTIONS -->
 
@@ -514,11 +525,15 @@
 
         <div class="container">
 
-            <div class="card">
+            <div class="page-scroll">
 
-                <h2>Comparatif des domaines</h2>
+                <div class="card">
 
-                <div id="comparisonTable"></div>
+                    <h2>Comparatif des domaines</h2>
+
+                    <div id="comparisonTable"></div>
+
+                </div>
 
             </div>
 
