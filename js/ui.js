@@ -78,6 +78,23 @@ ui.js — une seule source de vérité
 
             });
 
+        const home = $("btnHome");
+
+        if (home) {
+
+            if (pageId === "dashboard") {
+                home.setAttribute(
+                    "aria-current",
+                    "page"
+                );
+            } else {
+                home.removeAttribute(
+                    "aria-current"
+                );
+            }
+
+        }
+
         window.scrollTo(0, 0);
 
     }
@@ -1088,6 +1105,19 @@ ui.js — une seule source de vérité
                 );
 
             });
+
+        $("btnHome").addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                viewingId = null;
+                editingFromDetail = false;
+                showPage("dashboard");
+
+            }
+        );
 
         $("btnNewDomain").addEventListener(
             "click",

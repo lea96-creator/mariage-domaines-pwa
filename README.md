@@ -11,7 +11,10 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
 ## Fonctionnement
 
 - Une seule page (`index.html`) avec quatre écrans : accueil, fiche du domaine,
-  visite, comparatif. La navigation reste en haut de l’écran.
+  visite, comparatif. La navigation reste en haut de l’écran ; le titre
+  « Domaines » ramène à l’accueil.
+- Les boutons **Enregistrer / Modifier** et **Retour** restent accessibles en
+  bas de l’écran pendant le défilement.
 - Les domaines sont stockés dans `localStorage` sous la clé `wedding-domaines:v1`.
 - Les domaines sont créés depuis l’accueil et supprimés depuis le classement.
 - Le classement peut être filtré avec le champ de recherche.

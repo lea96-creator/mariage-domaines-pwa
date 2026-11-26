@@ -24,11 +24,6 @@
 
 <!-- Icônes SVG locales : aucun emoji, aucune police particulière -->
 <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite" aria-hidden="true" focusable="false">
-    <symbol id="i-home" viewBox="0 0 24 24">
-        <path d="M3 10.5 12 3l9 7.5"/>
-        <path d="M5 9.5V21h14V9.5"/>
-        <path d="M9 21v-6h6v6"/>
-    </symbol>
     <symbol id="i-visit" viewBox="0 0 24 24">
         <rect x="5" y="4" width="14" height="17" rx="2"/>
         <path d="M9 4V2h6v2"/>
@@ -64,22 +59,19 @@
 <header class="header">
     <div class="container header-inner">
 
-        <div class="brand">
+        <a
+            id="btnHome"
+            class="brand brand-link"
+            href="index.html"
+            aria-label="Domaines - planificateur de mariage, retour à l'accueil"
+            aria-current="page">
+
             <h1>Domaines</h1>
             <p>Planificateur de mariage</p>
-        </div>
+
+        </a>
 
         <nav class="top-nav" aria-label="Navigation principale">
-
-            <button
-                type="button"
-                data-page="dashboard"
-                aria-current="page">
-
-                <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"></use></svg>
-                <span>Accueil</span>
-
-            </button>
 
             <button type="button" data-page="domainForm">
 
