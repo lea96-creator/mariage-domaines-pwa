@@ -2,14 +2,6 @@
 
 Notes à reprendre à la prochaine session. Rien de bloquant pour la PR en cours.
 
-## Saisie des notes
-
-- Améliorer l’ajout rapide de notes dans les questions :
-  - découper le formulaire en plusieurs pages ;
-  - garder un bouton **Enregistrer** toujours disponible ;
-  - pouvoir revenir facilement à une page déjà remplie ;
-  - garder l’accès à la liste des questions depuis chaque page.
-
 ## Liste des questions
 
 - À faire dans une autre itération / une autre PR.

@@ -15,6 +15,10 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
   « Domaines » ramène à l’accueil.
 - Les boutons **Enregistrer / Modifier** et **Retour** restent accessibles en
   bas de l’écran pendant le défilement.
+- Le formulaire de visite est découpé en étapes : informations, une étape par
+  catégorie de questions, puis notes et score. Les étapes déjà remplies sont
+  signalées ; le bouton **Questions** ouvre la liste complète pour sauter
+  directement à une question.
 - Les domaines sont stockés dans `localStorage` sous la clé `wedding-domaines:v1`.
 - Les domaines sont créés depuis l’accueil et supprimés depuis le classement.
 - Le classement peut être filtré avec le champ de recherche.
@@ -120,6 +124,7 @@ css/style.css            styles
 js/questions.js          catalogue, pondérations, calcul du score
 js/store.js              état local + CRUD + sauvegarde
 js/domainView.js         recherche et fiche de lecture
+js/formSteps.js          étapes du formulaire et questions associées
 js/transfer.js           partage / import du fichier JSON
 js/excelExport.js        génération du classeur
 js/ui.js                 rendu et événements
@@ -129,6 +134,7 @@ sw.js                    cache versionné
 manifest.json            installation PWA
 tests/state.test.mjs     tests
 tests/domainView.test.mjs tests de la recherche et de la fiche
+tests/formSteps.test.mjs tests des étapes du formulaire
 tests/serve.test.mjs     tests de l'injection des fixtures
 scripts/serve.mjs        serveur statique local avec injection de dev
 ```

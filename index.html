@@ -54,6 +54,9 @@
         <path d="M6 7l1 14h10l1-14"/>
         <path d="M10 11v6M14 11v6"/>
     </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6 6 18"/>
+    </symbol>
 </svg>
 
 <header class="header">
@@ -259,7 +262,14 @@
 
             <form id="domainEditor">
 
-                <div class="card">
+                <div
+                    id="formSteps"
+                    class="form-steps"
+                    role="tablist"
+                    aria-label="Étapes du formulaire">
+                </div>
+
+                <div class="card form-step" data-step="info">
 
                     <h2>Informations générales</h2>
 
@@ -267,7 +277,6 @@
                     <input
                         type="text"
                         id="domainName"
-                        required
                         placeholder="Ex : Domaine des Cordeliers">
 
                     <label for="visitDate">Date de visite</label>
@@ -305,7 +314,7 @@
 
                 <!-- NOTES -->
 
-                <div class="card">
+                <div class="card form-step" data-step="notes">
 
                     <h2>Notes générales</h2>
 
@@ -318,7 +327,7 @@
 
                 <!-- SCORE -->
 
-                <div class="card score-card">
+                <div class="card score-card form-step" data-step="notes">
 
                     <h2>Score global</h2>
 
@@ -328,6 +337,33 @@
                         Les réponses « Inconnu » et les questions sans
                         réponse ne sont pas pénalisées.
                     </p>
+
+                </div>
+
+                <!-- NAVIGATION ENTRE LES ÉTAPES -->
+
+                <div class="step-nav">
+
+                    <button
+                        id="btnPrevStep"
+                        type="button"
+                        class="btn-step-nav">
+                        Précédent
+                    </button>
+
+                    <button
+                        id="btnQuestions"
+                        type="button"
+                        class="btn-step-nav">
+                        Questions
+                    </button>
+
+                    <button
+                        id="btnNextStep"
+                        type="button"
+                        class="btn-step-nav btn-step-nav-next">
+                        Suivant
+                    </button>
 
                 </div>
 
@@ -359,6 +395,48 @@
                 </div>
 
             </form>
+
+            <!-- LISTE COMPLÈTE DES QUESTIONS -->
+
+            <div
+                id="questionPanel"
+                class="question-panel"
+                hidden>
+
+                <div
+                    class="question-panel-backdrop"
+                    data-close-panel>
+                </div>
+
+                <div
+                    class="question-panel-sheet"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="questionPanelTitle">
+
+                    <div class="question-panel-header">
+
+                        <h2 id="questionPanelTitle">
+                            Liste des questions
+                        </h2>
+
+                        <button
+                            id="btnCloseQuestions"
+                            type="button"
+                            class="btn-icon"
+                            aria-label="Fermer la liste des questions">
+
+                            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"></use></svg>
+
+                        </button>
+
+                    </div>
+
+                    <div id="questionPanelList"></div>
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -396,6 +474,7 @@
 <script src="js/questions.js"></script>
 <script src="js/store.js"></script>
 <script src="js/domainView.js"></script>
+<script src="js/formSteps.js"></script>
 <script src="js/excelExport.js"></script>
 <script src="js/transfer.js"></script>
 <script src="js/ui.js"></script>

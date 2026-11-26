@@ -18,6 +18,9 @@ ui.js — une seule source de vérité
     let viewingId = null;
     let editingFromDetail = false;
 
+    let formSteps = [];
+    let currentStepId = "info";
+
     /*
     =========================================
     INITIALISATION
@@ -148,7 +151,14 @@ ui.js — une seule source de vérité
 
         if (!container) return;
 
+        formSteps =
+            FormSteps.buildSteps(
+                QUESTION_CATEGORIES
+            );
+
         container.replaceChildren();
+        buildFormSteps();
+        buildQuestionPanel();
 
         QUESTION_CATEGORIES.forEach(
             category => {
@@ -156,7 +166,11 @@ ui.js — une seule source de vérité
                 const card =
                     document.createElement("div");
 
-                card.className = "card";
+                card.className =
+                    "card form-step";
+                card.dataset.step =
+                    category.id;
+                card.hidden = true;
 
                 const heading =
                     document.createElement("h2");
@@ -248,6 +262,340 @@ ui.js — une seule source de vérité
         );
 
         updateScore();
+        updateStepStates();
+        showStep("info", { scroll: false });
+
+    }
+
+    function buildFormSteps() {
+
+        const container = $("formSteps");
+
+        if (!container) return;
+
+        container.replaceChildren();
+
+        formSteps.forEach(
+            (step, index) => {
+
+                const button =
+                    document.createElement("button");
+
+                button.type = "button";
+                button.className =
+                    "form-step-button";
+                button.dataset.step = step.id;
+                button.setAttribute(
+                    "role",
+                    "tab"
+                );
+                button.setAttribute(
+                    "aria-selected",
+                    "false"
+                );
+
+                const number =
+                    document.createElement("span");
+
+                number.className =
+                    "form-step-number";
+                number.textContent =
+                    String(index + 1);
+
+                const label =
+                    document.createElement("span");
+
+                label.className =
+                    "form-step-label";
+                label.textContent = step.short;
+
+                button.append(number, label);
+                container.appendChild(button);
+
+            }
+        );
+
+    }
+
+    function buildQuestionPanel() {
+
+        const list = $("questionPanelList");
+
+        if (!list) return;
+
+        list.replaceChildren();
+
+        const hint =
+            document.createElement("p");
+
+        hint.className = "hint";
+        hint.textContent =
+            "Cliquez sur une question pour ouvrir son étape.";
+
+        list.appendChild(hint);
+
+        QUESTION_CATEGORIES.forEach(
+            category => {
+
+                const group =
+                    document.createElement("section");
+
+                group.className =
+                    "question-panel-group";
+
+                const title =
+                    document.createElement("button");
+
+                title.type = "button";
+                title.className =
+                    "question-panel-group-title";
+                title.dataset.step =
+                    category.id;
+                title.textContent =
+                    category.title;
+
+                group.appendChild(title);
+
+                const questions =
+                    document.createElement("ul");
+
+                questions.className =
+                    "question-panel-list";
+
+                category.questions.forEach(
+                    (question, index) => {
+
+                        const item =
+                            document.createElement("li");
+
+                        const button =
+                            document.createElement("button");
+
+                        button.type = "button";
+                        button.className =
+                            "question-panel-question";
+                        button.dataset.question =
+                            `${category.id}_${index}`;
+                        button.textContent = question;
+
+                        item.appendChild(button);
+                        questions.appendChild(item);
+
+                    }
+                );
+
+                group.appendChild(questions);
+                list.appendChild(group);
+
+            }
+        );
+
+    }
+
+    function showStep(stepId, options = {}) {
+
+        const exists =
+            formSteps.some(
+                step => step.id === stepId
+            );
+
+        if (!exists) return;
+
+        currentStepId = stepId;
+
+        document
+            .querySelectorAll(".form-step")
+            .forEach(step => {
+
+                step.hidden =
+                    step.dataset.step !== stepId;
+
+            });
+
+        document
+            .querySelectorAll(
+                "#formSteps button"
+            )
+            .forEach(button => {
+
+                const active =
+                    button.dataset.step === stepId;
+
+                if (active) {
+                    button.setAttribute(
+                        "aria-current",
+                        "step"
+                    );
+                    button.setAttribute(
+                        "aria-selected",
+                        "true"
+                    );
+                } else {
+                    button.removeAttribute(
+                        "aria-current"
+                    );
+                    button.setAttribute(
+                        "aria-selected",
+                        "false"
+                    );
+                }
+
+            });
+
+        const index =
+            formSteps.findIndex(
+                step => step.id === stepId
+            );
+
+        const previous = $("btnPrevStep");
+        const next = $("btnNextStep");
+
+        if (previous) {
+            previous.disabled = index === 0;
+        }
+
+        if (next) {
+            next.disabled =
+                index === formSteps.length - 1;
+        }
+
+        updateStepStates();
+
+        if (options.scroll !== false) {
+            window.scrollTo(0, 0);
+        }
+
+    }
+
+    function moveStep(offset) {
+
+        const index =
+            formSteps.findIndex(
+                step => step.id === currentStepId
+            );
+
+        const target = formSteps[index + offset];
+
+        if (target) {
+            showStep(target.id);
+        }
+
+    }
+
+    function collectFormValues() {
+
+        return {
+            domainName: $("domainName").value,
+            visitDate: $("visitDate").value,
+            contactName: $("contactName").value,
+            contactPhone: $("contactPhone").value,
+            contactEmail: $("contactEmail").value,
+            estimatedPrice:
+                $("estimatedPrice").value,
+            generalNotes:
+                $("generalNotes").value,
+            answers: collectAnswers(),
+            notes: collectNotes()
+        };
+
+    }
+
+    function updateStepStates() {
+
+        const values = collectFormValues();
+
+        document
+            .querySelectorAll(
+                "#formSteps button"
+            )
+            .forEach(button => {
+
+                button.dataset.complete =
+                    FormSteps.isStepComplete(
+                        button.dataset.step,
+                        QUESTION_CATEGORIES,
+                        values
+                    )
+                        ? "true"
+                        : "false";
+
+            });
+
+        document
+            .querySelectorAll(
+                ".question-panel-group-title"
+            )
+            .forEach(button => {
+
+                button.dataset.complete =
+                    FormSteps.isStepComplete(
+                        button.dataset.step,
+                        QUESTION_CATEGORIES,
+                        values
+                    )
+                        ? "true"
+                        : "false";
+
+            });
+
+    }
+
+    function openQuestionPanel() {
+
+        const panel = $("questionPanel");
+
+        if (!panel) return;
+
+        panel.hidden = false;
+        updateStepStates();
+
+        const close =
+            $("btnCloseQuestions");
+
+        if (close) {
+            close.focus();
+        }
+
+    }
+
+    function closeQuestionPanel(restoreFocus = true) {
+
+        const panel = $("questionPanel");
+
+        if (!panel || panel.hidden) return;
+
+        panel.hidden = true;
+
+        if (restoreFocus) {
+            const button =
+                $("btnQuestions");
+
+            if (button) {
+                button.focus();
+            }
+        }
+
+    }
+
+    function showQuestion(questionId) {
+
+        const stepId =
+            FormSteps.findQuestionStep(
+                QUESTION_CATEGORIES,
+                questionId
+            );
+
+        if (!stepId) return;
+
+        showStep(stepId);
+        closeQuestionPanel(false);
+
+        const select =
+            $(`q_${questionId}`);
+
+        if (select) {
+            select.focus();
+        }
 
     }
 
@@ -342,6 +690,7 @@ ui.js — une seule source de vérité
             });
 
         updateScore();
+        showStep("info", { scroll: false });
 
     }
 
@@ -441,6 +790,8 @@ ui.js — une seule source de vérité
         );
 
         updateScore();
+        updateStepStates();
+        showStep("info", { scroll: false });
         showPage("domainForm");
 
         $("domainName").focus();
@@ -449,14 +800,39 @@ ui.js — une seule source de vérité
 
     function saveDomainFromForm() {
 
-        const form = $("domainEditor");
+        const name =
+            $("domainName").value.trim();
+
+        if (!name) {
+
+            showStep("info");
+            $("domainName").focus();
+            showToast(
+                "Indiquez le nom du domaine",
+                "error"
+            );
+            return;
+
+        }
+
+        const email =
+            $("contactEmail").value.trim();
 
         if (
-            form &&
-            typeof form.reportValidity === "function" &&
-            !form.reportValidity()
+            email &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                email
+            )
         ) {
+
+            showStep("info");
+            $("contactEmail").focus();
+            showToast(
+                "Adresse email invalide",
+                "error"
+            );
             return;
+
         }
 
         const existing = editingId
@@ -466,7 +842,7 @@ ui.js — une seule source de vérité
         const savedDomain =
             upsertDomain({
                 id: editingId || undefined,
-                domainName: $("domainName").value,
+                domainName: name,
                 visitDate: $("visitDate").value,
                 contactName: $("contactName").value,
                 contactPhone: $("contactPhone").value,
@@ -1174,21 +1550,125 @@ ui.js — une seule source de vérité
             }
         );
 
-        $("questionnaireContainer")
-            .addEventListener(
-                "change",
-                event => {
+        const formStepsContainer =
+            $("formSteps");
 
-                    if (
-                        event.target.matches(
-                            ".question-answer"
-                        )
-                    ) {
-                        updateScore();
+        if (formStepsContainer) {
+
+            formStepsContainer
+                .addEventListener(
+                    "click",
+                    event => {
+
+                        const button =
+                            event.target.closest(
+                                "button[data-step]"
+                            );
+
+                        if (button) {
+                            showStep(
+                                button.dataset.step
+                            );
+                        }
+
                     }
+                );
 
+        }
+
+        $("btnPrevStep").addEventListener(
+            "click",
+            () => moveStep(-1)
+        );
+
+        $("btnNextStep").addEventListener(
+            "click",
+            () => moveStep(1)
+        );
+
+        $("btnQuestions").addEventListener(
+            "click",
+            openQuestionPanel
+        );
+
+        $("btnCloseQuestions").addEventListener(
+            "click",
+            () => closeQuestionPanel()
+        );
+
+        $("questionPanel").addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target.matches(
+                        "[data-close-panel]"
+                    )
+                ) {
+                    closeQuestionPanel();
                 }
-            );
+
+            }
+        );
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                if (event.key === "Escape") {
+                    closeQuestionPanel();
+                }
+
+            }
+        );
+
+        $("questionPanelList").addEventListener(
+            "click",
+            event => {
+
+                const group =
+                    event.target.closest(
+                        "button[data-step]"
+                    );
+
+                if (group) {
+                    showStep(
+                        group.dataset.step
+                    );
+                    closeQuestionPanel(false);
+                    return;
+                }
+
+                const question =
+                    event.target.closest(
+                        "button[data-question]"
+                    );
+
+                if (question) {
+                    showQuestion(
+                        question.dataset.question
+                    );
+                }
+
+            }
+        );
+
+        ["input", "change"].forEach(
+            type => {
+
+                $("domainEditor")
+                    .addEventListener(
+                        type,
+                        () => {
+
+                            updateScore();
+                            updateStepStates();
+
+                        }
+                    );
+
+            }
+        );
 
         const search = $("domainSearch");
 
