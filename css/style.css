@@ -21,6 +21,7 @@
     --text-light: #6c757d;
 
     --radius: 14px;
+    --action-bar: 68px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
 }
@@ -305,11 +306,6 @@ button {
     color: #333;
 }
 
-.btn-success {
-    background: var(--success);
-    color: white;
-}
-
 .top-actions {
     display: grid;
     gap: 8px;
@@ -328,25 +324,83 @@ button {
 }
 
 .top-actions button,
-.actions button {
+.actions .btn-action {
     padding: 14px;
     border-radius: 12px;
     font-size: 1rem;
     font-weight: 600;
 }
 
-.actions {
-    position: sticky;
-    bottom: 16px;
-    z-index: 500;
-    display: grid;
-    grid-template-columns: 1fr auto;
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
-    margin: 12px 0 16px;
-    padding: 10px;
-    border-radius: 12px;
-    background: rgba(248, 246, 242, 0.96);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    min-height: 48px;
+    min-width: 180px;
+}
+
+.btn-action .icon {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 48px;
+    padding: 0 10px;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.btn-back:hover {
+    background: #efeae3;
+    color: var(--text);
+}
+
+.btn-back .icon {
+    width: 18px;
+    height: 18px;
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e7e0d7;
+}
+
+.actions .btn-back {
+    justify-self: start;
+}
+
+.actions .btn-action {
+    justify-self: end;
+}
+
+@media (max-width: 767px) {
+
+    .actions {
+        position: sticky;
+        bottom: 0;
+        z-index: 500;
+        margin: 16px -12px 0;
+        padding: 10px 12px calc(
+            10px + env(safe-area-inset-bottom, 0px)
+        );
+        border-top: 1px solid #e7e0d7;
+        background: rgba(248, 246, 242, 0.96);
+        backdrop-filter: blur(8px);
+    }
+
 }
 
 .btn-icon {
@@ -535,7 +589,7 @@ td {
 .notification-layer {
     position: fixed;
     left: 50%;
-    bottom: 92px;
+    bottom: calc(var(--action-bar) + 16px);
     transform: translateX(-50%);
     z-index: 2000;
     display: grid;

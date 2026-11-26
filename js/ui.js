@@ -328,11 +328,35 @@ ui.js — une seule source de vérité
 
     }
 
+    function setFormBackLabel(fromDetail) {
+
+        const label = $("btnBackLabel");
+        const button = $("btnBack");
+
+        if (label) {
+            label.textContent =
+                fromDetail
+                    ? "Retour à la fiche"
+                    : "Retour";
+        }
+
+        if (button) {
+            button.setAttribute(
+                "aria-label",
+                fromDetail
+                    ? "Retour à la fiche"
+                    : "Retour au classement"
+            );
+        }
+
+    }
+
     function startNewDomain() {
 
         resetForm();
         viewingId = null;
         editingFromDetail = false;
+        setFormBackLabel(false);
 
         $("visitDate").value = todayISO();
 
@@ -353,6 +377,7 @@ ui.js — une seule source de vérité
         editingId = domain.id;
         viewingId = domain.id;
         editingFromDetail = fromDetail;
+        setFormBackLabel(fromDetail);
 
         [
             "domainName",
@@ -1071,7 +1096,22 @@ ui.js — une seule source de vérité
 
         $("btnBack").addEventListener(
             "click",
-            () => showPage("dashboard")
+            () => {
+
+                if (
+                    editingFromDetail &&
+                    viewingId
+                ) {
+                    showDomainDetail(
+                        viewingId
+                    );
+                    return;
+                }
+
+                viewingId = null;
+                showPage("dashboard");
+
+            }
         );
 
         $("btnDetailBack").addEventListener(
