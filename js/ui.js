@@ -200,6 +200,11 @@ ui.js — une seule source de vérité
 
                         block.className = "question";
 
+                        const main =
+                            document.createElement("div");
+
+                        main.className = "question-main";
+
                         const label =
                             document.createElement("label");
 
@@ -250,15 +255,18 @@ ui.js — une seule source de vérité
                         note.className = "question-note";
                         note.dataset.note = id;
                         note.placeholder =
-                            "Commentaires...";
+                            "Note (facultatif)";
                         note.setAttribute(
                             "aria-label",
-                            `Commentaire : ${question}`
+                            `Note : ${question}`
                         );
 
-                        block.append(
+                        main.append(
                             label,
-                            select,
+                            select
+                        );
+                        block.append(
+                            main,
                             note
                         );
 

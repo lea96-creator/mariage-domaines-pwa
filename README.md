@@ -13,8 +13,14 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
 - Une seule page (`index.html`) avec quatre écrans : accueil, fiche du domaine,
   visite, comparatif. La navigation reste en haut de l’écran ; le titre
   « Domaines » ramène à l’accueil.
-- Les boutons **Enregistrer / Modifier** et **Retour** restent accessibles en
-  bas de l’écran pendant le défilement.
+- Le formulaire utilise toute la largeur de la page. Chaque question présente
+  la réponse et sa note sur une ligne compacte.
+- Les boutons **Retour**, **Précédent**, **Questions**, **Suivant** et
+  **Enregistrer / Modifier** sont réunis dans la même barre collante en bas de
+  l’écran, accessibles à tout moment.
+- Aucune section du formulaire n’a de défilement imposé : la page défile
+  normalement. Seule la liste complète des questions peut défiler lorsqu’elle
+  est trop longue.
 - Le bouton clair/sombre est dans l’en-tête. Au départ, l’application suit le
   réglage du téléphone ou de l’ordinateur ; dès qu’on appuie sur le bouton, le
   choix est mémorisé sur l’appareil.

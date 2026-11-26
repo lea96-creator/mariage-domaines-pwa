@@ -88,6 +88,12 @@
         <circle cx="12" cy="12" r="4"/>
         <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>
     </symbol>
+    <symbol id="i-forward" viewBox="0 0 24 24">
+        <path d="M9 18l6-6-6-6"/>
+    </symbol>
+    <symbol id="i-list" viewBox="0 0 24 24">
+        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+    </symbol>
 </svg>
 
 <header class="header">
@@ -302,7 +308,7 @@
 
     <section id="domainForm" class="page">
 
-        <div class="container">
+        <div class="container container-wide">
 
             <form id="domainEditor">
 
@@ -384,34 +390,7 @@
 
                 </div>
 
-                <!-- NAVIGATION ENTRE LES ÉTAPES -->
-
-                <div class="step-nav">
-
-                    <button
-                        id="btnPrevStep"
-                        type="button"
-                        class="btn-step-nav">
-                        Précédent
-                    </button>
-
-                    <button
-                        id="btnQuestions"
-                        type="button"
-                        class="btn-step-nav">
-                        Questions
-                    </button>
-
-                    <button
-                        id="btnNextStep"
-                        type="button"
-                        class="btn-step-nav btn-step-nav-next">
-                        Suivant
-                    </button>
-
-                </div>
-
-                <!-- ACTIONS -->
+                <!-- ACTIONS ET NAVIGATION ENTRE LES ÉTAPES -->
 
                 <div class="actions form-actions">
 
@@ -425,6 +404,49 @@
                         <span id="btnBackLabel">Retour</span>
 
                     </button>
+
+                    <div
+                        class="step-controls"
+                        role="group"
+                        aria-label="Navigation entre les étapes">
+
+                        <button
+                            id="btnPrevStep"
+                            type="button"
+                            class="btn-step-nav"
+                            aria-label="Étape précédente"
+                            title="Étape précédente">
+
+                            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"></use></svg>
+                            <span>Précédent</span>
+
+                        </button>
+
+                        <button
+                            id="btnQuestions"
+                            type="button"
+                            class="btn-step-nav"
+                            aria-label="Liste des questions"
+                            title="Liste des questions">
+
+                            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"></use></svg>
+                            <span>Questions</span>
+
+                        </button>
+
+                        <button
+                            id="btnNextStep"
+                            type="button"
+                            class="btn-step-nav"
+                            aria-label="Étape suivante"
+                            title="Étape suivante">
+
+                            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-forward"></use></svg>
+                            <span>Suivant</span>
+
+                        </button>
+
+                    </div>
 
                     <button
                         id="btnSave"

@@ -53,7 +53,7 @@
 
     --radius: 14px;
     --container-padding: 12px;
-    --action-bar: 76px;
+    --action-bar: 64px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
 }
@@ -167,6 +167,11 @@ body {
     max-width: 900px;
     margin: auto;
     padding: var(--container-padding);
+}
+
+.container-wide {
+    max-width: none;
+    padding: 12px 16px;
 }
 
 .page {
@@ -392,18 +397,36 @@ select:focus {
     background: var(--field-bg);
     border-radius: 12px;
     border: 1px solid var(--border);
-    padding: 12px;
-    margin-bottom: 12px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+.question-main {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr) minmax(110px, 150px);
+    align-items: center;
+    gap: 10px;
 }
 
 .question .question-title {
-    margin: 0 0 10px;
+    margin: 0;
+    font-size: 0.92rem;
     font-weight: 600;
+    line-height: 1.3;
 }
 
-.question textarea {
-    margin-top: 8px;
-    min-height: 70px;
+.question .question-answer,
+.question .question-note {
+    padding: 8px 10px;
+    min-height: 40px;
+    font-size: 0.9rem;
+}
+
+.question .question-note {
+    margin-top: 6px;
+    min-height: 38px;
+    resize: vertical;
 }
 
 /* =============================
@@ -447,8 +470,7 @@ button {
     line-height: 1.2;
 }
 
-.top-actions button,
-.actions .btn-action {
+.top-actions button {
     padding: 14px;
     border-radius: 12px;
     font-size: 1rem;
@@ -459,26 +481,30 @@ button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    min-height: 48px;
+    gap: 6px;
+    min-height: 40px;
     min-width: 0;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 .btn-action .icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
 .btn-back {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    min-height: 48px;
-    padding: 0 10px;
+    min-height: 40px;
+    padding: 0 8px;
     border-radius: 10px;
     background: transparent;
     color: var(--text-light);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
 }
 
@@ -567,22 +593,32 @@ button {
     display: none;
 }
 
-.step-nav {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 8px;
-    margin-top: 16px;
+.step-controls {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
 }
 
 .btn-step-nav {
-    min-height: 44px;
-    padding: 10px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 40px;
+    padding: 8px 10px;
     border-radius: 10px;
     background: var(--chip-bg);
     color: var(--text);
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     font-weight: 600;
+}
+
+.btn-step-nav .icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .btn-step-nav:hover:not(:disabled) {
@@ -592,10 +628,6 @@ button {
 .btn-step-nav:disabled {
     opacity: 0.45;
     cursor: not-allowed;
-}
-
-.btn-step-nav-next {
-    justify-self: end;
 }
 
 /* =============================
@@ -691,13 +723,13 @@ button {
     position: sticky;
     bottom: 0;
     z-index: 500;
-    display: grid;
-    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    gap: 8px;
     margin: 16px 0 0;
-    padding: 12px 0 calc(
-        12px + env(safe-area-inset-bottom, 0px)
+    padding: 10px 0 calc(
+        10px + env(safe-area-inset-bottom, 0px)
     );
     border-top: 1px solid var(--action-border);
     background: var(--action-bg);
@@ -709,14 +741,7 @@ button {
     max-width: 100%;
     white-space: normal;
     overflow-wrap: anywhere;
-}
-
-.actions .btn-back {
-    justify-self: start;
-}
-
-.actions .btn-action {
-    justify-self: stretch;
+    flex-shrink: 0;
 }
 
 .btn-icon {
@@ -976,6 +1001,41 @@ td {
 }
 
 /* =============================
+   PETITS ÉCRANS
+============================= */
+
+@media (max-width: 479px) {
+
+    .container-wide {
+        padding: 8px 10px;
+    }
+
+    .actions {
+        gap: 6px;
+    }
+
+    .actions .btn-back span,
+    .step-controls .btn-step-nav span {
+        display: none;
+    }
+
+    .btn-back {
+        padding: 0 6px;
+    }
+
+    .btn-step-nav {
+        min-width: 34px;
+        padding: 8px;
+    }
+
+    .btn-action {
+        padding: 9px 10px;
+        font-size: 0.85rem;
+    }
+
+}
+
+/* =============================
    DESKTOP
 ============================= */
 
@@ -983,6 +1043,27 @@ td {
 
     :root {
         --container-padding: 20px;
+    }
+
+    .container-wide {
+        padding: 16px 24px;
+    }
+
+    .question {
+        display: grid;
+        grid-template-columns:
+            minmax(0, 1fr) 150px minmax(0, 1fr);
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+    }
+
+    .question-main {
+        display: contents;
+    }
+
+    .question .question-note {
+        margin-top: 0;
     }
 
     .header-inner {
