@@ -279,3 +279,29 @@ test("state survives a reload", () => {
     );
 
 });
+
+test("the dev fixture file is valid backup data", () => {
+
+    const { api } = loadCore();
+
+    const raw = fs.readFileSync(
+        "fixtures/domains.json",
+        "utf8"
+    );
+
+    const result = api.parseBackup(raw);
+
+    assert.equal(result.domains.length, 5);
+
+    result.domains.forEach(domain => {
+        assert.ok(domain.id);
+        assert.ok(domain.domainName);
+    });
+
+    assert.ok(
+        result.domains.some(
+            domain => domain.estimatedPrice === null
+        )
+    );
+
+});

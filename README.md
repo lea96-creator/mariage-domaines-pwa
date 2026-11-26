@@ -37,6 +37,16 @@ Puis ouvrir <http://localhost:8080>. Le serveur est un petit script Node sans
 aucune dépendance (pas de `npm install`, pas de Python, pas de Go). Le service
 worker ne fonctionne que sur `localhost` ou en HTTPS (pas sur `file://`).
 
+Le serveur local injecte aussi cinq domaines fictifs tirés de
+`fixtures/domains.json` dans le navigateur. Chaque rechargement repart de ces
+données, ce qui permet de parcourir tous les écrans avec du contenu réaliste.
+Cette injection vient uniquement du serveur de dev : le site publié ne contient
+aucun code ni aucun écran de démonstration. Pour la désactiver :
+
+```bash
+FIXTURES=0 node scripts/serve.mjs
+```
+
 ## Téléphone vers PC : transférer les données
 
 Le stockage du navigateur est **propre à un appareil et à un navigateur**.
@@ -95,8 +105,8 @@ dépôt ne contient que le code de l'application.
 ## Développement
 
 ```bash
-node --test tests/*.test.mjs   # score, CRUD et sauvegardes
-node --check js/*.js
+node --test tests/*.test.mjs   # score, CRUD, sauvegardes et serveur de dev
+node --check js/*.js scripts/serve.mjs
 ```
 
 Structure :
@@ -111,8 +121,11 @@ js/transfer.js           partage / import du fichier JSON
 js/excelExport.js        génération du classeur
 js/ui.js                 rendu et événements
 js/vendor/xlsx.full.min.js   SheetJS (local, hors ligne)
+fixtures/domains.json    cinq domaines inventés (serveur de dev uniquement)
 sw.js                    cache versionné
 manifest.json            installation PWA
 tests/state.test.mjs     tests
-scripts/serve.mjs        serveur statique local
+tests/domainView.test.mjs tests de la recherche et de la fiche
+tests/serve.test.mjs     tests de l'injection des fixtures
+scripts/serve.mjs        serveur statique local avec injection de dev
 ```
