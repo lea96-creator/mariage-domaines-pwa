@@ -3,33 +3,155 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Wedding Domaines Planner</title>
+    <meta name="description" content="Noter les réponses aux questions lors des visites de domaines de mariage, puis exporter vers Excel.">
 
-    <meta name="theme-color" content="#8b5e3c">
+    <meta id="themeColor" name="theme-color" content="#8b5e3c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Domaines">
 
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- Thème appliqué avant le premier affichage pour éviter un flash -->
+    <script>
+    (function () {
+
+        var saved = null;
+
+        try {
+            saved = localStorage.getItem("wedding-domaines:theme");
+        } catch (error) {}
+
+        var dark = saved === "dark" || (
+            saved !== "light" &&
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+        );
+
+        document.documentElement.setAttribute(
+            "data-theme",
+            dark ? "dark" : "light"
+        );
+
+    })();
+    </script>
+
     <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
 
 </head>
 
 <body>
 
+<!-- Icônes SVG locales : aucun emoji, aucune police particulière -->
+<svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-visit" viewBox="0 0 24 24">
+        <rect x="5" y="4" width="14" height="17" rx="2"/>
+        <path d="M9 4V2h6v2"/>
+        <path d="M9 10h6M9 14h6M9 18h4"/>
+    </symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24">
+        <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>
+    </symbol>
+    <symbol id="i-back" viewBox="0 0 24 24">
+        <path d="M15 18l-6-6 6-6"/>
+    </symbol>
+    <symbol id="i-save" viewBox="0 0 24 24">
+        <path d="M5 3h11l3 3v15H5z"/>
+        <path d="M8 3v6h8"/>
+        <path d="M8 21v-7h8v7"/>
+    </symbol>
+    <symbol id="i-view" viewBox="0 0 24 24">
+        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/>
+        <circle cx="12" cy="12" r="2.5"/>
+    </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24">
+        <path d="M3 17.25V21h3.75L18 9.75l-3.75-3.75L3 17.25z"/>
+        <path d="M14.5 6.5l3 3"/>
+    </symbol>
+    <symbol id="i-delete" viewBox="0 0 24 24">
+        <path d="M4 7h16"/>
+        <path d="M9 7V4h6v3"/>
+        <path d="M6 7l1 14h10l1-14"/>
+        <path d="M10 11v6M14 11v6"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6 6 18"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+        <path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5z"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>
+    </symbol>
+    <symbol id="i-forward" viewBox="0 0 24 24">
+        <path d="M9 18l6-6-6-6"/>
+    </symbol>
+    <symbol id="i-list" viewBox="0 0 24 24">
+        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+    </symbol>
+</svg>
+
 <header class="header">
-    <div class="container">
+    <div class="container header-inner">
 
-        <h1>💍 Wedding Domaines Planner</h1>
+        <a
+            id="btnHome"
+            class="brand brand-link"
+            href="index.html"
+            aria-label="Domaines - planificateur de mariage, retour à l'accueil"
+            aria-current="page">
 
-        <p>
-            Comparateur de domaines pour mariage sur 4 jours
-        </p>
+            <h1>Domaines</h1>
+            <p>Planificateur de mariage</p>
+
+        </a>
+
+        <nav class="top-nav" aria-label="Navigation principale">
+
+            <button type="button" data-page="domainForm">
+
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-visit"></use></svg>
+                <span>Visite</span>
+
+            </button>
+
+            <button type="button" data-page="comparisonPage">
+
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg>
+                <span>Comparatif</span>
+
+            </button>
+
+            <button
+                id="btnTheme"
+                type="button"
+                class="btn-theme"
+                aria-label="Activer le thème sombre"
+                aria-pressed="false"
+                title="Changer de thème">
+
+                <svg class="icon icon-moon" aria-hidden="true" focusable="false"><use href="#i-moon"></use></svg>
+                <svg class="icon icon-sun" aria-hidden="true" focusable="false"><use href="#i-sun"></use></svg>
+
+            </button>
+
+        </nav>
 
     </div>
+
+    <!-- Étapes de la visite, affichées uniquement sur cette page -->
+    <div
+        id="formSteps"
+        class="form-steps header-steps"
+        role="tablist"
+        aria-label="Étapes du formulaire">
+    </div>
+
 </header>
 
 <main>
@@ -40,42 +162,96 @@
 
         <div class="container">
 
-            <div class="top-actions">
+            <div class="top-actions primary-action">
 
-                <button id="btnNewDomain" class="btn-primary">
-                    ➕ Nouveau domaine
-                </button>
+                <button
+                    id="btnNewDomain"
+                    type="button"
+                    class="btn-primary">
 
-                <button id="btnExportExcel" class="btn-secondary">
-                    📊 Export Excel
+                    Nouveau domaine
+
                 </button>
 
             </div>
 
+            <div class="top-actions secondary">
+
+                <button
+                    id="btnExportExcel"
+                    type="button"
+                    class="btn-secondary">
+
+                    Export Excel
+
+                </button>
+
+                <button
+                    id="btnBackup"
+                    type="button"
+                    class="btn-secondary">
+
+                    Sauvegarde
+
+                </button>
+
+                <button
+                    id="btnRestore"
+                    type="button"
+                    class="btn-secondary">
+
+                    Restaurer
+
+                </button>
+
+                <input
+                    type="file"
+                    id="importFile"
+                    accept="application/json,.json"
+                    hidden>
+
+            </div>
+
+            <p class="hint">
+                Vos données restent sur cet appareil. Faites une sauvegarde
+                pour les transférer (téléphone vers PC).
+            </p>
+
             <div class="stats-grid">
 
                 <div class="card stat">
-                    <h3>🏡 Domaines</h3>
+                    <h3>Domaines</h3>
                     <span id="totalDomains">0</span>
                 </div>
 
                 <div class="card stat">
-                    <h3>⭐ Meilleure note</h3>
+                    <h3>Meilleure note</h3>
                     <span id="bestScore">0</span>
                 </div>
 
                 <div class="card stat">
-                    <h3>❤️ Coup de cœur</h3>
+                    <h3>Coup de cœur</h3>
                     <span id="favoriteDomain">-</span>
                 </div>
 
             </div>
 
-            <div class="card">
+            <div class="card ranking-card">
 
                 <h2>Classement automatique</h2>
 
-                <div id="rankingList">
+                <div class="search-field">
+                    <label for="domainSearch">
+                        Rechercher un domaine
+                    </label>
+                    <input
+                        type="search"
+                        id="domainSearch"
+                        placeholder="Nom, contact ou note"
+                        autocomplete="off">
+                </div>
+
+                <div id="rankingList" class="ranking-list">
 
                     <div class="empty-state">
                         Aucun domaine enregistré
@@ -89,124 +265,253 @@
 
     </section>
 
+    <!-- FICHE EN LECTURE -->
+
+    <section id="domainDetail" class="page">
+
+        <div class="container container-reading">
+
+            <div class="card detail-card">
+
+                <h2 id="detailTitle">Fiche du domaine</h2>
+
+                <p
+                    id="detailScore"
+                    class="detail-score">
+                </p>
+
+                <div id="detailContent"></div>
+
+            </div>
+
+            <div class="actions detail-actions">
+
+                <button
+                    id="btnDetailBack"
+                    type="button"
+                    class="btn-back"
+                    aria-label="Retour au classement">
+
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"></use></svg>
+                    Retour
+
+                </button>
+
+                <button
+                    id="btnEditDomain"
+                    type="button"
+                    class="btn-primary btn-action">
+
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-edit"></use></svg>
+                    Modifier
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
     <!-- FORMULAIRE DOMAINE -->
 
     <section id="domainForm" class="page">
 
-        <div class="container">
+        <div class="container container-reading">
 
-            <div class="card">
+            <form id="domainEditor" class="form-editor">
 
-                <h2>Informations générales</h2>
+                <div class="card form-step" data-step="info">
 
-                <label>Nom du domaine</label>
+                    <h2>Informations générales</h2>
 
-                <input
-                    type="text"
-                    id="domainName"
-                    placeholder="Ex : Domaine des Cordeliers">
+                    <div class="step-content">
 
-                <label>Date de visite</label>
+                        <label for="domainName">Nom du domaine</label>
+                        <input
+                            type="text"
+                            id="domainName"
+                            placeholder="Ex : Domaine des Cordeliers">
 
-                <input
-                    type="date"
-                    id="visitDate">
+                        <label for="visitDate">Date de visite</label>
+                        <input
+                            type="date"
+                            id="visitDate">
 
-                <label>Personne de contact</label>
+                        <label for="contactName">Personne de contact</label>
+                        <input
+                            type="text"
+                            id="contactName">
 
-                <input
-                    type="text"
-                    id="contactName">
+                        <label for="contactPhone">Téléphone</label>
+                        <input
+                            type="tel"
+                            id="contactPhone">
 
-                <label>Téléphone</label>
+                        <label for="contactEmail">Email</label>
+                        <input
+                            type="email"
+                            id="contactEmail">
 
-                <input
-                    type="tel"
-                    id="contactPhone">
+                        <label for="estimatedPrice">Prix annoncé (€)</label>
+                        <input
+                            type="number"
+                            id="estimatedPrice"
+                            min="0"
+                            step="any"
+                            inputmode="decimal">
 
-                <label>Email</label>
-
-                <input
-                    type="email"
-                    id="contactEmail">
-
-                <label>Prix annoncé (€)</label>
-
-                <input
-                    type="number"
-                    id="estimatedPrice">
-
-            </div>
-
-            <!-- QUESTIONS -->
-
-            <div id="questionnaireContainer">
-
-                <!-- Généré automatiquement via questions.js -->
-
-            </div>
-
-            <!-- PHOTOS -->
-
-            <div class="card">
-
-                <h2>📷 Photos du domaine</h2>
-
-                <input
-                    type="file"
-                    id="photos"
-                    accept="image/*"
-                    multiple>
-
-                <div id="photosPreview"></div>
-
-            </div>
-
-            <!-- NOTES -->
-
-            <div class="card">
-
-                <h2>📝 Notes générales</h2>
-
-                <textarea
-                    id="generalNotes"
-                    placeholder="Commentaires libres..."></textarea>
-
-            </div>
-
-            <!-- SCORE -->
-
-            <div class="card score-card">
-
-                <h2>⭐ Score global</h2>
-
-                <div id="totalScore">
-
-                    0 / 100
+                    </div>
 
                 </div>
 
-            </div>
+                <!-- Généré automatiquement via questions.js + ui.js -->
+                <div id="questionnaireContainer"></div>
 
-            <!-- ACTIONS -->
+                <!-- NOTES -->
 
-            <div class="actions">
+                <div class="card form-step" data-step="notes">
 
-                <button
-                    id="btnSave"
-                    class="btn-success">
+                    <h2>Notes générales</h2>
 
-                    💾 Enregistrer
+                    <div class="step-content">
 
-                </button>
+                        <label for="generalNotes">Commentaires libres</label>
+                        <textarea
+                            id="generalNotes"
+                            placeholder="Commentaires libres..."></textarea>
+
+                    </div>
+
+                </div>
+
+                <!-- SCORE -->
+
+                <div class="card score-card form-step" data-step="notes">
+
+                    <h2>Score global</h2>
+
+                    <div id="totalScore">0 / 100</div>
+
+                    <p class="hint">
+                        Les réponses « Inconnu » et les questions sans
+                        réponse ne sont pas pénalisées.
+                    </p>
+
+                </div>
+
+            </form>
+
+            <!-- ACTIONS ET NAVIGATION ENTRE LES ÉTAPES -->
+
+            <div class="actions form-actions">
 
                 <button
                     id="btnBack"
-                    class="btn-secondary">
+                    type="button"
+                    class="btn-back"
+                    aria-label="Retour au classement">
 
-                    ⬅ Retour
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"></use></svg>
+                    <span id="btnBackLabel">Retour</span>
 
                 </button>
+
+                <div
+                    class="step-controls"
+                    role="group"
+                    aria-label="Navigation entre les étapes">
+
+                    <button
+                        id="btnPrevStep"
+                        type="button"
+                        class="btn-step-nav"
+                        aria-label="Étape précédente"
+                        title="Étape précédente">
+
+                        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"></use></svg>
+                        <span>Précédent</span>
+
+                    </button>
+
+                    <button
+                        id="btnQuestions"
+                        type="button"
+                        class="btn-step-nav"
+                        aria-label="Liste des questions"
+                        title="Liste des questions">
+
+                        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"></use></svg>
+                        <span>Questions</span>
+
+                    </button>
+
+                    <button
+                        id="btnNextStep"
+                        type="button"
+                        class="btn-step-nav"
+                        aria-label="Étape suivante"
+                        title="Étape suivante">
+
+                        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-forward"></use></svg>
+                        <span>Suivant</span>
+
+                    </button>
+
+                </div>
+
+                <button
+                    id="btnSave"
+                    type="submit"
+                    form="domainEditor"
+                    class="btn-primary btn-action">
+
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-save"></use></svg>
+                    Enregistrer
+
+                </button>
+
+            </div>
+
+            <!-- LISTE COMPLÈTE DES QUESTIONS -->
+
+            <div
+                id="questionPanel"
+                class="question-panel"
+                hidden>
+
+                <div
+                    class="question-panel-backdrop"
+                    data-close-panel>
+                </div>
+
+                <div
+                    class="question-panel-sheet"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="questionPanelTitle">
+
+                    <div class="question-panel-header">
+
+                        <h2 id="questionPanelTitle">
+                            Liste des questions
+                        </h2>
+
+                        <button
+                            id="btnCloseQuestions"
+                            type="button"
+                            class="btn-icon"
+                            aria-label="Fermer la liste des questions">
+
+                            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"></use></svg>
+
+                        </button>
+
+                    </div>
+
+                    <div id="questionPanelList"></div>
+
+                </div>
 
             </div>
 
@@ -220,13 +525,11 @@
 
         <div class="container">
 
-            <div class="card">
+            <div class="card comparison-card">
 
-                <h2>📈 Comparatif des domaines</h2>
+                <h2>Comparatif des domaines</h2>
 
-                <div id="comparisonTable">
-
-                </div>
+                <div id="comparisonTable"></div>
 
             </div>
 
@@ -236,44 +539,39 @@
 
 </main>
 
-<nav class="bottom-nav">
+<!-- Calque dédié aux notifications, au-dessus du reste de la page -->
+<div
+    id="notificationLayer"
+    class="notification-layer"
+    aria-live="polite"
+    aria-atomic="true">
+</div>
 
-    <button data-page="dashboard">
-
-        🏠
-        <span>Accueil</span>
-
-    </button>
-
-    <button data-page="domainForm">
-
-        🏡
-        <span>Visite</span>
-
-    </button>
-
-    <button data-page="comparisonPage">
-
-        📊
-        <span>Comparatif</span>
-
-    </button>
-
-</nav>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-
+<script src="js/vendor/xlsx.full.min.js"></script>
 <script src="js/questions.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/dashboard.js"></script>
+<script src="js/questionLoader.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/store.js"></script>
+<script src="js/domainView.js"></script>
+<script src="js/formSteps.js"></script>
 <script src="js/excelExport.js"></script>
-<script src="js/app.js"></script>
+<script src="js/transfer.js"></script>
+<script src="js/ui.js"></script>
+
 <script>
 
-if ('serviceWorker' in navigator) {
+if ("serviceWorker" in navigator) {
 
-    window.addEventListener('load', () => {
+    window.addEventListener("load", () => {
 
-        navigator.serviceWorker.register('./sw.js');
+        navigator.serviceWorker
+            .register("./sw.js")
+            .catch(error =>
+                console.error(
+                    "Service worker indisponible",
+                    error
+                )
+            );
 
     });
 

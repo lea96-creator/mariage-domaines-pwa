@@ -1,443 +1,370 @@
 /*
 =========================================
 Wedding Domaines Planner
-excelExport.js
+excelExport.js — export .xlsx analysable
 =========================================
 */
 
-async function exportDomainsToExcel() {
+function answerLabel(value) {
 
-    try {
+    return Object.prototype.hasOwnProperty.call(
+        ANSWER_LABELS,
+        value
+    )
+        ? ANSWER_LABELS[value]
+        : "";
 
-        const domains = await loadDomains();
+}
 
-        if (!domains || domains.length === 0) {
+function domainScore(domain) {
 
-            alert(
-                "Aucun domaine enregistré."
+    return calculateDomainScore(
+        domain.answers
+    );
+
+}
+
+function exportDateValue(text) {
+
+    if (
+        !/^\d{4}-\d{2}-\d{2}$/.test(text || "")
+    ) {
+        return "";
+    }
+
+    const [year, month, day] =
+        text.split("-").map(Number);
+
+    return new Date(year, month - 1, day);
+
+}
+
+function exportPriceValue(domain) {
+
+    if (
+        domain.estimatedPrice === null ||
+        domain.estimatedPrice === undefined ||
+        domain.estimatedPrice === ""
+    ) {
+        return "";
+    }
+
+    const number =
+        typeof domain.estimatedPrice === "number"
+            ? domain.estimatedPrice
+            : Number(
+                String(domain.estimatedPrice)
+                    .replace(",", ".")
             );
 
-            return;
+    return Number.isFinite(number) ? number : "";
+
+}
+
+function sortedDomainsForExport(domains) {
+
+    return [...domains].sort(
+        (a, b) =>
+            domainScore(b) - domainScore(a)
+    );
+
+}
+
+function exportDateStamp() {
+
+    const today = new Date();
+
+    return (
+        `${today.getFullYear()}-`
+        + String(today.getMonth() + 1)
+            .padStart(2, "0")
+        + "-"
+        + String(today.getDate())
+            .padStart(2, "0")
+    );
+
+}
+
+/*
+=========================================
+EXPORT PRINCIPAL
+=========================================
+3 onglets :
+  Domaines    — 1 ligne par domaine, 1 colonne par question
+  Réponses    — format long, idéal pour un tableau croisé
+  Statistiques— indicateurs globaux
+=========================================
+*/
+
+function exportDomainsToExcel(domains = getState().domains) {
+
+    if (!domains || domains.length === 0) {
+        throw new Error("Aucun domaine enregistré.");
+    }
+
+    if (typeof XLSX === "undefined") {
+        throw new Error(
+            "Bibliothèque Excel indisponible."
+        );
+    }
+
+    const workbook =
+        XLSX.utils.book_new();
+
+    const sorted =
+        sortedDomainsForExport(domains);
+
+    /*
+    ========================================
+    ONGLET DOMAINES
+    ========================================
+    */
+
+    const domainHeaders = [
+        "Classement",
+        "Domaine",
+        "Date visite",
+        "Contact",
+        "Téléphone",
+        "Email",
+        "Prix (€)",
+        "Score (/100)",
+        "Notes générales"
+    ];
+
+    QUESTION_INDEX.forEach(entry => {
+
+        domainHeaders.push(
+            `${entry.category.title} — ${entry.question}`
+        );
+
+    });
+
+    const domainRows = [
+        domainHeaders
+    ];
+
+    sorted.forEach(
+        (domain, index) => {
+
+            const row = [
+                index + 1,
+                domain.domainName || "",
+                exportDateValue(domain.visitDate),
+                domain.contactName || "",
+                domain.contactPhone || "",
+                domain.contactEmail || "",
+                exportPriceValue(domain),
+                domainScore(domain),
+                domain.generalNotes || ""
+            ];
+
+            QUESTION_INDEX.forEach(
+                (entry, questionId) => {
+
+                    row.push(
+                        answerLabel(
+                            domain.answers[questionId]
+                        )
+                    );
+
+                }
+            );
+
+            domainRows.push(row);
+
+        }
+    );
+
+    const domainSheet =
+        XLSX.utils.aoa_to_sheet(
+            domainRows,
+            { cellDates: true }
+        );
+
+    for (
+        let row = 2;
+        row <= sorted.length + 1;
+        row++
+    ) {
+
+        const cell =
+            domainSheet[`C${row}`];
+
+        if (cell && cell.t === "d") {
+            cell.z = "yyyy-mm-dd";
         }
 
-        const workbook =
-            XLSX.utils.book_new();
-
-        /*
-        =========================================
-        ONGLET RÉSUMÉ
-        =========================================
-        */
-
-        const summaryData = [
-
-            [
-                "Classement",
-                "Domaine",
-                "Score",
-                "Prix",
-                "Date visite",
-                "Contact"
-            ]
-
-        ];
-
-        const sortedDomains =
-            [...domains]
-
-            .sort(
-                (a, b) =>
-                    b.score - a.score
-            );
-
-        sortedDomains.forEach(
-
-            (domain, index) => {
-
-                summaryData.push([
-
-                    index + 1,
-
-                    domain.domainName || "",
-
-                    domain.score || 0,
-
-                    domain.estimatedPrice || "",
-
-                    domain.visitDate || "",
-
-                    domain.contactName || ""
-
-                ]);
-
-            }
-
-        );
-
-        const summarySheet =
-            XLSX.utils.aoa_to_sheet(
-                summaryData
-            );
-
-        XLSX.utils.book_append_sheet(
-
-            workbook,
-
-            summarySheet,
-
-            "Classement"
-
-        );
-
-        /*
-        =========================================
-        ONGLET PAR DOMAINE
-        =========================================
-        */
-
-        sortedDomains.forEach(
-            domain => {
-
-                const sheetData = [];
-
-                sheetData.push([
-                    "Informations générales"
-                ]);
-
-                sheetData.push([]);
-
-                sheetData.push([
-                    "Nom du domaine",
-                    domain.domainName || ""
-                ]);
-
-                sheetData.push([
-                    "Date visite",
-                    domain.visitDate || ""
-                ]);
-
-                sheetData.push([
-                    "Prix annoncé",
-                    domain.estimatedPrice || ""
-                ]);
-
-                sheetData.push([
-                    "Contact",
-                    domain.contactName || ""
-                ]);
-
-                sheetData.push([
-                    "Téléphone",
-                    domain.contactPhone || ""
-                ]);
-
-                sheetData.push([
-                    "Email",
-                    domain.contactEmail || ""
-                ]);
-
-                sheetData.push([
-                    "Score global",
-                    domain.score || 0
-                ]);
-
-                sheetData.push([]);
-                sheetData.push([
-                    "Réponses questionnaire"
-                ]);
-
-                sheetData.push([]);
-
-                if (domain.answers) {
-
-                    Object.entries(
-                        domain.answers
-                    )
-
-                    .forEach(
-
-                        ([key, value]) => {
-
-                            sheetData.push([
-                                key,
-                                value
-                            ]);
-
-                        }
-
-                    );
-
-                }
-
-                sheetData.push([]);
-                sheetData.push([
-                    "Commentaires"
-                ]);
-
-                if (domain.notes) {
-
-                    Object.entries(
-                        domain.notes
-                    )
-
-                    .forEach(
-
-                        ([key, value]) => {
-
-                            sheetData.push([
-                                key,
-                                value
-                            ]);
-
-                        }
-
-                    );
-
-                }
-
-                sheetData.push([]);
-                sheetData.push([
-                    "Notes générales"
-                ]);
-
-                sheetData.push([
-                    domain.generalNotes || ""
-                ]);
-
-                const worksheet =
-                    XLSX.utils.aoa_to_sheet(
-                        sheetData
-                    );
-
-                const safeName =
-                    (domain.domainName ||
-                        "Domaine")
-
-                    .substring(0, 31)
-
-                    .replace(/[\\/*?:[\]]/g, "");
-
-                XLSX.utils.book_append_sheet(
-
-                    workbook,
-
-                    worksheet,
-
-                    safeName
-
+    }
+
+    domainSheet["!cols"] = [
+        { wch: 10 },
+        { wch: 26 },
+        { wch: 13 },
+        { wch: 20 },
+        { wch: 16 },
+        { wch: 26 },
+        { wch: 12 },
+        { wch: 13 },
+        { wch: 40 },
+        ...Array.from(
+            { length: TOTAL_QUESTIONS },
+            () => ({ wch: 34 })
+        )
+    ];
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        domainSheet,
+        "Domaines"
+    );
+
+    /*
+    ========================================
+    ONGLET RÉPONSES (format long)
+    ========================================
+    */
+
+    const answerRows = [
+        [
+            "Domaine",
+            "Catégorie",
+            "Poids",
+            "Question",
+            "Réponse",
+            "Commentaire"
+        ]
+    ];
+
+    sorted.forEach(domain => {
+
+        QUESTION_CATEGORIES.forEach(
+            category => {
+
+                category.questions.forEach(
+                    (question, index) => {
+
+                        const questionId =
+                            `${category.id}_${index}`;
+
+                        const answer =
+                            answerLabel(
+                                domain.answers[questionId]
+                            );
+
+                        const note =
+                            domain.notes[questionId] || "";
+
+                        if (!answer && !note) return;
+
+                        answerRows.push([
+                            domain.domainName || "",
+                            category.title,
+                            category.weight,
+                            question,
+                            answer,
+                            note
+                        ]);
+
+                    }
                 );
 
             }
         );
 
-        /*
-        =========================================
-        ONGLET STATISTIQUES
-        =========================================
-        */
+    });
 
-        const averageScore =
+    const answerSheet =
+        XLSX.utils.aoa_to_sheet(answerRows);
+
+    answerSheet["!cols"] = [
+        { wch: 26 },
+        { wch: 32 },
+        { wch: 8 },
+        { wch: 52 },
+        { wch: 14 },
+        { wch: 52 }
+    ];
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        answerSheet,
+        "Réponses"
+    );
+
+    /*
+    ========================================
+    ONGLET STATISTIQUES
+    ========================================
+    */
+
+    const totalScore =
+        domains.reduce(
+            (sum, domain) =>
+                sum + domainScore(domain),
+            0
+        );
+
+    const statsRows = [
+        ["Statistique", "Valeur"],
+        [
+            "Nombre de domaines",
+            domains.length
+        ],
+        [
+            "Score moyen",
             Math.round(
-
-                domains.reduce(
-
-                    (sum, domain) =>
-
-                        sum +
-                        (domain.score || 0),
-
-                    0
-
-                )
-                /
-                domains.length
-
-            );
-
-        const statsSheet =
-            XLSX.utils.aoa_to_sheet([
-
-                [
-                    "Statistique",
-                    "Valeur"
-                ],
-
-                [
-                    "Nombre de domaines",
-                    domains.length
-                ],
-
-                [
-                    "Score moyen",
-                    averageScore
-                ],
-
-                [
-                    "Meilleur score",
-                    sortedDomains[0]
-                        ?.score || 0
-                ],
-
-                [
-                    "Domaine favori",
-                    sortedDomains[0]
-                        ?.domainName || ""
-                ]
-
-            ]);
-
-        XLSX.utils.book_append_sheet(
-
-            workbook,
-
-            statsSheet,
-
-            "Statistiques"
-
-        );
-
-        /*
-        =========================================
-        EXPORT FICHIER
-        =========================================
-        */
-
-        const exportDate =
+                totalScore / domains.length
+            )
+        ],
+        [
+            "Meilleur score",
+            domainScore(sorted[0])
+        ],
+        [
+            "Domaine favori",
+            sorted[0].domainName || ""
+        ],
+        [
+            "Date d'export",
             new Date()
+        ]
+    ];
 
-            .toISOString()
-
-            .split("T")[0];
-
-        XLSX.writeFile(
-
-            workbook,
-
-            `Comparatif_Domaines_${exportDate}.xlsx`
-
+    const statsSheet =
+        XLSX.utils.aoa_to_sheet(
+            statsRows,
+            { cellDates: true }
         );
-
-    }
-
-    catch(error) {
-
-        console.error(error);
-
-        alert(
-            "Erreur lors de l'export Excel."
-        );
-
-    }
-
-}
-
-/*
-=========================================
-EXPORT JSON
-=========================================
-*/
-
-async function exportRawData() {
-
-    const domains =
-        await loadDomains();
-
-    const file = {
-
-        exportDate:
-            new Date().toISOString(),
-
-        version: "1.0",
-
-        domains
-
-    };
-
-    const blob =
-        new Blob(
-
-            [
-                JSON.stringify(
-                    file,
-                    null,
-                    2
-                )
-            ],
-
-            {
-                type:
-                "application/json"
-            }
-
-        );
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-    const link =
-        document.createElement("a");
-
-    link.href = url;
-
-    link.download =
-        "WeddingDomainesBackup.json";
-
-    link.click();
-
-}
-
-/*
-=========================================
-BOUTON EXPORT
-=========================================
-*/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        const button =
-            document.getElementById(
-                "btnExportExcel"
-            );
-
-        if (button) {
-
-            button.addEventListener(
-
-                "click",
-
-                exportDomainsToExcel
-
-            );
-
-        }
-
-    }
-
-);
-
-/*
-=========================================
-UTILITAIRES
-=========================================
-*/
-
-function excelValue(value) {
 
     if (
-        value === null ||
-        value === undefined
+        statsSheet["B6"] &&
+        statsSheet["B6"].t === "d"
     ) {
-
-        return "";
-
+        statsSheet["B6"].z =
+            "yyyy-mm-dd hh:mm";
     }
 
-    return value;
+    statsSheet["!cols"] = [
+        { wch: 24 },
+        { wch: 30 }
+    ];
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        statsSheet,
+        "Statistiques"
+    );
+
+    /*
+    ========================================
+    FICHIER
+    ========================================
+    */
+
+    XLSX.writeFile(
+        workbook,
+        `Comparatif_Domaines_${exportDateStamp()}.xlsx`
+    );
 
 }

@@ -1,0 +1,21 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check JavaScript syntax
+        run: node --check scripts/serve.mjs && node --check js/questions.js && node --check js/store.js && node --check js/domainView.js && node --check js/transfer.js && node --check js/excelExport.js && node --check js/ui.js && node --check sw.js
+
+      - name: Run tests
+        run: node --test tests/*.test.mjs
