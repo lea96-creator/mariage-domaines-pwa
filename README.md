@@ -11,16 +11,18 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
 ## Fonctionnement
 
 - Une seule page (`index.html`) avec quatre écrans : accueil, fiche du domaine,
-  visite, comparatif. La navigation reste en haut de l’écran ; le titre
-  « Domaines » ramène à l’accueil.
-- L’en-tête reste fixe. La liste des étapes de la visite est intégrée en
-  deuxième ligne et n’apparaît que sur la page **Visite**.
+  visite, comparatif. L’en-tête occupe toute la largeur sur une seule ligne ;
+  le titre « Domaines » ramène à l’accueil.
+- La liste des étapes de la visite est intégrée sous l’en-tête, sur un fond
+  transparent, et n’apparaît que sur la page **Visite**. Les pastilles gardent
+  leurs couleurs selon l’état : à remplir, en cours, terminé.
 - Le formulaire et la fiche de lecture utilisent la même largeur (les trois
   quarts de la page sur ordinateur, toute la largeur sur téléphone) et le même
   affichage des questions : intitulé, réponse et note alignés.
-- La page elle-même ne défile jamais. Seule la zone de contenu défile, et
-  uniquement lorsqu’elle est trop longue. L’en-tête et la barre d’actions
-  restent toujours visibles.
+- La page elle-même ne défile jamais. Seules les listes défilent : le
+  **classement automatique** sur l’accueil, les questions d’une étape dans le
+  formulaire (le titre de l’étape reste visible), le contenu de la fiche et le
+  tableau comparatif. L’en-tête et la barre d’actions restent toujours visibles.
 - Les boutons **Retour**, **Précédent**, **Questions**, **Suivant** et
   **Enregistrer / Modifier** sont réunis dans la même barre en bas de
   l’écran, accessibles à tout moment.

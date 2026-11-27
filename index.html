@@ -162,103 +162,99 @@
 
         <div class="container">
 
-            <div class="page-scroll">
+            <div class="top-actions primary-action">
 
-                <div class="top-actions primary-action">
+                <button
+                    id="btnNewDomain"
+                    type="button"
+                    class="btn-primary">
 
-                    <button
-                        id="btnNewDomain"
-                        type="button"
-                        class="btn-primary">
+                    Nouveau domaine
 
-                        Nouveau domaine
+                </button>
 
-                    </button>
+            </div>
 
+            <div class="top-actions secondary">
+
+                <button
+                    id="btnExportExcel"
+                    type="button"
+                    class="btn-secondary">
+
+                    Export Excel
+
+                </button>
+
+                <button
+                    id="btnBackup"
+                    type="button"
+                    class="btn-secondary">
+
+                    Sauvegarde
+
+                </button>
+
+                <button
+                    id="btnRestore"
+                    type="button"
+                    class="btn-secondary">
+
+                    Restaurer
+
+                </button>
+
+                <input
+                    type="file"
+                    id="importFile"
+                    accept="application/json,.json"
+                    hidden>
+
+            </div>
+
+            <p class="hint">
+                Vos données restent sur cet appareil. Faites une sauvegarde
+                pour les transférer (téléphone vers PC).
+            </p>
+
+            <div class="stats-grid">
+
+                <div class="card stat">
+                    <h3>Domaines</h3>
+                    <span id="totalDomains">0</span>
                 </div>
 
-                <div class="top-actions secondary">
+                <div class="card stat">
+                    <h3>Meilleure note</h3>
+                    <span id="bestScore">0</span>
+                </div>
 
-                    <button
-                        id="btnExportExcel"
-                        type="button"
-                        class="btn-secondary">
+                <div class="card stat">
+                    <h3>Coup de cœur</h3>
+                    <span id="favoriteDomain">-</span>
+                </div>
 
-                        Export Excel
+            </div>
 
-                    </button>
+            <div class="card ranking-card">
 
-                    <button
-                        id="btnBackup"
-                        type="button"
-                        class="btn-secondary">
+                <h2>Classement automatique</h2>
 
-                        Sauvegarde
-
-                    </button>
-
-                    <button
-                        id="btnRestore"
-                        type="button"
-                        class="btn-secondary">
-
-                        Restaurer
-
-                    </button>
-
+                <div class="search-field">
+                    <label for="domainSearch">
+                        Rechercher un domaine
+                    </label>
                     <input
-                        type="file"
-                        id="importFile"
-                        accept="application/json,.json"
-                        hidden>
-
+                        type="search"
+                        id="domainSearch"
+                        placeholder="Nom, contact ou note"
+                        autocomplete="off">
                 </div>
 
-                <p class="hint">
-                    Vos données restent sur cet appareil. Faites une sauvegarde
-                    pour les transférer (téléphone vers PC).
-                </p>
+                <div id="rankingList" class="ranking-list">
 
-                <div class="stats-grid">
-
-                    <div class="card stat">
-                        <h3>Domaines</h3>
-                        <span id="totalDomains">0</span>
-                    </div>
-
-                    <div class="card stat">
-                        <h3>Meilleure note</h3>
-                        <span id="bestScore">0</span>
-                    </div>
-
-                    <div class="card stat">
-                        <h3>Coup de cœur</h3>
-                        <span id="favoriteDomain">-</span>
-                    </div>
-
-                </div>
-
-                <div class="card">
-
-                    <h2>Classement automatique</h2>
-
-                    <div class="search-field">
-                        <label for="domainSearch">
-                            Rechercher un domaine
-                        </label>
-                        <input
-                            type="search"
-                            id="domainSearch"
-                            placeholder="Nom, contact ou note"
-                            autocomplete="off">
-                    </div>
-
-                    <div id="rankingList">
-
-                        <div class="empty-state">
-                            Aucun domaine enregistré
-                        </div>
-
+                    <div class="empty-state">
+                        Aucun domaine enregistré
                     </div>
 
                 </div>
@@ -275,20 +271,16 @@
 
         <div class="container container-reading">
 
-            <div class="page-scroll">
+            <div class="card detail-card">
 
-                <div class="card detail-card">
+                <h2 id="detailTitle">Fiche du domaine</h2>
 
-                    <h2 id="detailTitle">Fiche du domaine</h2>
+                <p
+                    id="detailScore"
+                    class="detail-score">
+                </p>
 
-                    <p
-                        id="detailScore"
-                        class="detail-score">
-                    </p>
-
-                    <div id="detailContent"></div>
-
-                </div>
+                <div id="detailContent"></div>
 
             </div>
 
@@ -327,45 +319,49 @@
 
         <div class="container container-reading">
 
-            <form id="domainEditor" class="page-scroll">
+            <form id="domainEditor" class="form-editor">
 
                 <div class="card form-step" data-step="info">
 
                     <h2>Informations générales</h2>
 
-                    <label for="domainName">Nom du domaine</label>
-                    <input
-                        type="text"
-                        id="domainName"
-                        placeholder="Ex : Domaine des Cordeliers">
+                    <div class="step-content">
 
-                    <label for="visitDate">Date de visite</label>
-                    <input
-                        type="date"
-                        id="visitDate">
+                        <label for="domainName">Nom du domaine</label>
+                        <input
+                            type="text"
+                            id="domainName"
+                            placeholder="Ex : Domaine des Cordeliers">
 
-                    <label for="contactName">Personne de contact</label>
-                    <input
-                        type="text"
-                        id="contactName">
+                        <label for="visitDate">Date de visite</label>
+                        <input
+                            type="date"
+                            id="visitDate">
 
-                    <label for="contactPhone">Téléphone</label>
-                    <input
-                        type="tel"
-                        id="contactPhone">
+                        <label for="contactName">Personne de contact</label>
+                        <input
+                            type="text"
+                            id="contactName">
 
-                    <label for="contactEmail">Email</label>
-                    <input
-                        type="email"
-                        id="contactEmail">
+                        <label for="contactPhone">Téléphone</label>
+                        <input
+                            type="tel"
+                            id="contactPhone">
 
-                    <label for="estimatedPrice">Prix annoncé (€)</label>
-                    <input
-                        type="number"
-                        id="estimatedPrice"
-                        min="0"
-                        step="any"
-                        inputmode="decimal">
+                        <label for="contactEmail">Email</label>
+                        <input
+                            type="email"
+                            id="contactEmail">
+
+                        <label for="estimatedPrice">Prix annoncé (€)</label>
+                        <input
+                            type="number"
+                            id="estimatedPrice"
+                            min="0"
+                            step="any"
+                            inputmode="decimal">
+
+                    </div>
 
                 </div>
 
@@ -378,10 +374,14 @@
 
                     <h2>Notes générales</h2>
 
-                    <label for="generalNotes">Commentaires libres</label>
-                    <textarea
-                        id="generalNotes"
-                        placeholder="Commentaires libres..."></textarea>
+                    <div class="step-content">
+
+                        <label for="generalNotes">Commentaires libres</label>
+                        <textarea
+                            id="generalNotes"
+                            placeholder="Commentaires libres..."></textarea>
+
+                    </div>
 
                 </div>
 
@@ -525,15 +525,11 @@
 
         <div class="container">
 
-            <div class="page-scroll">
+            <div class="card comparison-card">
 
-                <div class="card">
+                <h2>Comparatif des domaines</h2>
 
-                    <h2>Comparatif des domaines</h2>
-
-                    <div id="comparisonTable"></div>
-
-                </div>
+                <div id="comparisonTable"></div>
 
             </div>
 

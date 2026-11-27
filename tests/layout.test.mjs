@@ -28,7 +28,16 @@ test("the step list is part of the sticky header", () => {
 
 });
 
-test("the document is fixed and only content regions scroll", () => {
+test("the header spans the full page on one line", () => {
+
+    assert.match(
+        css,
+        /\.header-inner\s*\{[^}]*flex-direction:\s*row[^}]*flex-wrap:\s*nowrap[^}]*max-width:\s*none/s
+    );
+
+});
+
+test("only list regions scroll inside a fixed document", () => {
 
     assert.match(
         css,
@@ -40,12 +49,22 @@ test("the document is fixed and only content regions scroll", () => {
     );
     assert.match(
         css,
-        /\.page-scroll\s*\{[^}]*overflow-y:\s*auto/s
+        /\.ranking-list,\s*\.step-content,\s*#detailContent,\s*#comparisonTable\s*\{[^}]*overflow:\s*auto/s
     );
     assert.doesNotMatch(
         css,
         /\.actions\s*\{[^}]*position:\s*sticky/s
     );
+
+});
+
+test("each page gives its own list a scroll region", () => {
+
+    assert.match(html, /class="card ranking-card"/);
+    assert.match(html, /id="rankingList" class="ranking-list"/);
+    assert.match(html, /<form id="domainEditor" class="form-editor">/);
+    assert.match(html, /class="card detail-card"/);
+    assert.match(html, /class="card comparison-card"/);
 
 });
 
@@ -61,11 +80,6 @@ test("both questionnaire views use the same reading width", () => {
 });
 
 test("the save button submits the form beside it", () => {
-
-    assert.match(
-        html,
-        /<form id="domainEditor" class="page-scroll">/
-    );
 
     const save = html.slice(
         html.indexOf('id="btnSave"')

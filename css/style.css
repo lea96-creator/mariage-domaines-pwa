@@ -57,9 +57,6 @@
     --action-bar: 64px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
-    --header-step-bg: rgba(255, 255, 255, 0.14);
-    --header-step-complete: rgba(220, 235, 217, 0.9);
-
 }
 
 [data-theme="dark"] {
@@ -206,17 +203,24 @@ main {
     min-height: 0;
 }
 
-/* Seule cette zone défile ; l'en-tête et la barre d'actions restent fixes. */
-.page-scroll {
+/* Seules les listes défilent : le titre de chaque vue reste visible. */
+.ranking-list,
+.step-content,
+#detailContent,
+#comparisonTable {
     flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
+    overflow: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
     padding-right: 2px;
 }
 
 form {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
     margin: 0;
 }
 
@@ -236,9 +240,14 @@ form {
 
 .header-inner {
     display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    max-width: none;
     gap: 12px;
+    margin: 0;
     padding-top: 8px;
     padding-bottom: 8px;
 }
@@ -283,6 +292,7 @@ form {
 
 .top-nav {
     display: flex;
+    flex-wrap: nowrap;
     flex-shrink: 0;
     gap: 4px;
 }
@@ -385,6 +395,19 @@ form {
     color: var(--text-light);
     font-size: 0.8rem;
     line-height: 1.35;
+}
+
+.ranking-card {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.ranking-card h2,
+.ranking-card .search-field {
+    flex: 0 0 auto;
 }
 
 /* =============================
@@ -593,7 +616,7 @@ body.form-active .form-steps {
     gap: 6px;
     overflow-x: auto;
     padding: 0 var(--page-gutter) 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    background: transparent;
     scrollbar-width: thin;
 }
 
@@ -610,8 +633,8 @@ body.form-active .form-steps {
     min-height: 34px;
     padding: 6px 9px;
     border-radius: 999px;
-    background: var(--header-step-bg);
-    color: rgba(255, 255, 255, 0.88);
+    background: var(--chip-bg);
+    color: var(--text-light);
     font-size: 0.78rem;
     white-space: nowrap;
 }
@@ -624,8 +647,8 @@ body.form-active .form-steps {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.18);
-    color: white;
+    background: var(--chip-number-bg);
+    color: var(--text);
     font-size: 0.72rem;
     font-weight: 700;
 }
@@ -636,8 +659,9 @@ body.form-active .form-steps {
 }
 
 .form-step-button[aria-current="step"] {
-    background: white;
+    background: var(--secondary);
     color: var(--primary-dark);
+    font-weight: 700;
 }
 
 .form-step-button[aria-current="step"]
@@ -647,18 +671,35 @@ body.form-active .form-steps {
 }
 
 .form-step-button[data-complete="true"]:not([aria-current="step"]) {
-    background: var(--header-step-complete);
-    color: #2b6b3a;
+    background: var(--complete-bg);
+    color: var(--complete-text);
 }
 
 .form-step-button[data-complete="true"]
 .form-step-number {
-    background: #2b6b3a;
+    background: var(--success);
     color: white;
 }
 
 .form-step-button:focus-visible {
     outline-color: white;
+}
+
+.form-step {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.form-step h2 {
+    flex: 0 0 auto;
+}
+
+.form-step.score-card {
+    flex: 0 0 auto;
+    overflow: visible;
 }
 
 .form-step[hidden] {
@@ -847,8 +888,16 @@ body.form-active .form-steps {
    TABLEAUX
 ============================= */
 
-#comparisonTable {
-    overflow-x: auto;
+.comparison-card {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.comparison-card h2 {
+    flex: 0 0 auto;
 }
 
 table {
@@ -915,6 +964,19 @@ td {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
+}
+
+.detail-card {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.detail-card h2,
+.detail-card .detail-score {
+    flex: 0 0 auto;
 }
 
 .detail-section {

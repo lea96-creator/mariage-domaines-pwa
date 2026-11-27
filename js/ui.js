@@ -114,14 +114,16 @@ ui.js — une seule source de vérité
             pageId === "domainForm"
         );
 
-        const activeScroll =
-            document.querySelector(
-                ".page.active .page-scroll"
-            );
-
-        if (activeScroll) {
-            activeScroll.scrollTop = 0;
-        }
+        document
+            .querySelectorAll(
+                ".page.active .ranking-list," +
+                ".page.active .step-content," +
+                ".page.active #detailContent," +
+                ".page.active #comparisonTable"
+            )
+            .forEach(region => {
+                region.scrollTop = 0;
+            });
 
     }
 
@@ -200,6 +202,13 @@ ui.js — une seule source de vérité
 
                 heading.textContent = category.title;
                 card.appendChild(heading);
+
+                const list =
+                    document.createElement("div");
+
+                list.className =
+                    "step-content question-list";
+                card.appendChild(list);
 
                 category.questions.forEach(
                     (question, index) => {
@@ -282,7 +291,7 @@ ui.js — une seule source de vérité
                             note
                         );
 
-                        card.appendChild(block);
+                        list.appendChild(block);
 
                     }
                 );
@@ -493,12 +502,13 @@ ui.js — une seule source de vérité
         updateStepStates();
 
         if (options.scroll !== false) {
-            const form = $("domainForm");
-            const scroll =
-                form && form.querySelector(".page-scroll");
+            const activeContent =
+                document.querySelector(
+                    ".form-step:not([hidden]) .step-content"
+                );
 
-            if (scroll) {
-                scroll.scrollTop = 0;
+            if (activeContent) {
+                activeContent.scrollTop = 0;
             }
 
         }
