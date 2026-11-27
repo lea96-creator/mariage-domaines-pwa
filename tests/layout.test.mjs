@@ -49,7 +49,7 @@ test("only list regions scroll inside a fixed document", () => {
     );
     assert.match(
         css,
-        /\.ranking-list,\s*\.step-content,\s*#detailContent,\s*#comparisonTable\s*\{[^}]*overflow:\s*auto/s
+        /\.ranking-list,\s*\.step-content,\s*#detailContent,\s*#comparisonTable,\s*#questionPanelList\s*\{[^}]*overflow:\s*auto/s
     );
     assert.doesNotMatch(
         css,
@@ -65,6 +65,29 @@ test("each page gives its own list a scroll region", () => {
     assert.match(html, /<form id="domainEditor" class="form-editor">/);
     assert.match(html, /class="card detail-card"/);
     assert.match(html, /class="card comparison-card"/);
+
+});
+
+test("generated question cards join the form column directly", () => {
+
+    assert.match(
+        css,
+        /#questionnaireContainer\s*\{\s*display:\s*contents/
+    );
+
+});
+
+test("the question panel keeps its title while its list scrolls", () => {
+
+    assert.match(
+        css,
+        /\.question-panel-sheet\s*\{[^}]*display:\s*flex[^}]*flex-direction:\s*column[^}]*overflow:\s*hidden/s
+    );
+    assert.match(
+        css,
+        /\.question-panel-header\s*\{[^}]*flex:\s*0 0 auto/s
+    );
+    assert.match(html, /id="questionPanelList"/);
 
 });
 

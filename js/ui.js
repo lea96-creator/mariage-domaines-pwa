@@ -617,6 +617,13 @@ ui.js — une seule source de vérité
         panel.hidden = false;
         updateStepStates();
 
+        const list =
+            $("questionPanelList");
+
+        if (list) {
+            list.scrollTop = 0;
+        }
+
         const close =
             $("btnCloseQuestions");
 

@@ -21,8 +21,9 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
   affichage des questions : intitulé, réponse et note alignés.
 - La page elle-même ne défile jamais. Seules les listes défilent : le
   **classement automatique** sur l’accueil, les questions d’une étape dans le
-  formulaire (le titre de l’étape reste visible), le contenu de la fiche et le
-  tableau comparatif. L’en-tête et la barre d’actions restent toujours visibles.
+  formulaire (le titre de l’étape reste visible), le contenu de la fiche, le
+  tableau comparatif et la **liste complète des questions**. Dans chaque cas,
+  le titre du composant et la barre d’actions restent visibles.
 - Les boutons **Retour**, **Précédent**, **Questions**, **Suivant** et
   **Enregistrer / Modifier** sont réunis dans la même barre en bas de
   l’écran, accessibles à tout moment.

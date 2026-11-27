@@ -207,7 +207,8 @@ main {
 .ranking-list,
 .step-content,
 #detailContent,
-#comparisonTable {
+#comparisonTable,
+#questionPanelList {
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
@@ -685,6 +686,11 @@ body.form-active .form-steps {
     outline-color: white;
 }
 
+/* Les cartes générées rejoignent directement la colonne du formulaire. */
+#questionnaireContainer {
+    display: contents;
+}
+
 .form-step {
     display: flex;
     flex: 1 1 auto;
@@ -768,9 +774,11 @@ body.form-active .form-steps {
 
 .question-panel-sheet {
     position: relative;
+    display: flex;
+    flex-direction: column;
     width: min(92vw, 720px);
     max-height: min(80vh, 720px);
-    overflow-y: auto;
+    overflow: hidden;
     padding: 16px;
     border-radius: 16px 16px 0 0;
     background: var(--background);
@@ -779,6 +787,7 @@ body.form-active .form-steps {
 
 .question-panel-header {
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
