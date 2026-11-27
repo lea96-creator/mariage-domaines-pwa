@@ -37,6 +37,22 @@ test("the header spans the full page on one line", () => {
 
 });
 
+test("the step bar is a form-like surface inside the header", () => {
+
+    const steps = css.slice(
+        css.indexOf(".header-steps {"),
+        css.indexOf(".form-step-button {")
+    );
+
+    assert.match(steps, /background:\s*var\(--background\)/);
+    assert.match(steps, /border-radius:\s*14px 14px 0 0/);
+    assert.match(
+        css,
+        /\.form-step-button\s*\{[^}]*border:\s*1px solid var\(--border\)[^}]*background:\s*var\(--card\)/s
+    );
+
+});
+
 test("only list regions scroll inside a fixed document", () => {
 
     assert.match(

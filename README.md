@@ -13,9 +13,10 @@ Les améliorations à traiter plus tard sont notées dans [TODO.md](TODO.md).
 - Une seule page (`index.html`) avec quatre écrans : accueil, fiche du domaine,
   visite, comparatif. L’en-tête occupe toute la largeur sur une seule ligne ;
   le titre « Domaines » ramène à l’accueil.
-- La liste des étapes de la visite est intégrée sous l’en-tête, sur un fond
-  transparent, et n’apparaît que sur la page **Visite**. Les pastilles gardent
-  leurs couleurs selon l’état : à remplir, en cours, terminé.
+- La liste des étapes de la visite reste dans l’en-tête, dans un bandeau clair
+  détaché du fond coloré, avec le même style que les cartes du formulaire. Elle
+  n’apparaît que sur la page **Visite**. Les pastilles gardent leurs couleurs
+  selon l’état : à remplir, en cours, terminé.
 - Le formulaire et la fiche de lecture utilisent la même largeur (les trois
   quarts de la page sur ordinateur, toute la largeur sur téléphone) et le même
   affichage des questions : intitulé, réponse et note alignés.
